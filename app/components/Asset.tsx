@@ -72,9 +72,9 @@ export default function Asset({publicKey}:{
                     <NextButton children = "Swap" onClick={()=>alert("hi")}/>
                 </div>
 
-                {/* <div>
-                    <TokenList tokens = {tokenBalances?.tokens || []}
-                </div> */}
+                <div>
+                    <TokenList tokens = {tokenBalances?.tokens || []}/>
+                </div>
             </div>
         </div>
     )
