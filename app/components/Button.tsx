@@ -21,7 +21,6 @@ export const SecondaryButton = ({ children, onClick }: {
   children: React.ReactNode; 
   onClick: () => void;
 }) => {
-
   return (
     <button
       type="button"
@@ -32,3 +31,18 @@ export const SecondaryButton = ({ children, onClick }: {
     </button>
   );
 };
+
+export const NextButton = ({ children, onClick }: { 
+    children: React.ReactNode; 
+    onClick: () => void;
+  }) => {
+    return (
+      <button
+        type="button"
+        onClick={onClick} 
+        className="text-white bg-blue-400 border border-gray-300 focus:outline-none hover:bg-blue-600 rounded-lg text-md px-15 w-40 font-semibold py-2.5 me-2"
+      >
+        {children}
+      </button>
+    );
+  };

@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",
+    "@solana/spl-token": "^0.4.9",
     "@solana/web3.js": "^1.98.0",
+    "axios": "^1.7.9",
     "next": "15.1.4",
     "prisma": "^6.2.1",
     "react": "^19.0.0",
