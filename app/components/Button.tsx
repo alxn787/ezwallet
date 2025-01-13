@@ -32,7 +32,8 @@ export const SecondaryButton = ({ children, onClick }: {
   );
 };
 
-export const NextButton = ({ children, onClick }: { 
+export const NextButton = ({active,children, onClick }: { 
+    active: Boolean;
     children: React.ReactNode; 
     onClick: () => void;
   }) => {
@@ -40,8 +41,7 @@ export const NextButton = ({ children, onClick }: {
       <button
         type="button"
         onClick={onClick} 
-        className="text-white bg-blue-400 border border-gray-300 focus:outline-none hover:bg-blue-600 rounded-lg text-md px-15 w-40 font-semibold py-2.5 me-2"
-      >
+        className={`text-white border border-gray-300 focus:outline-none hover:bg-blue-600 rounded-lg text-md px-15 w-32 font-semibold py-2.5 me-2 ${active? "bg-blue-500":"bg-blue-400"}`}>
         {children}
       </button>
     );

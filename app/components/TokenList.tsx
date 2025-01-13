@@ -4,7 +4,7 @@ import { TokenwithBalance } from "../api/Hooks/useTokens"
 export function TokenList({tokens}: {
     tokens: TokenwithBalance[]
 }) {
-    return <div>
+    return <div className="p-2">
         {tokens.map(t => <TokenRow key={t.name} token={t} />)}
     </div>
 }
@@ -22,18 +22,16 @@ function TokenRow({token}: {
                     {token.name}
                 </div>
                 <div className="font-slim">
-                    {token.balance}  {token.name} 
+                    {Number(token.balance).toFixed(3)}  {token.name}
                 </div>
             </div>
         </div>
         <div>
             <div>
                 <div className="font-bold flex justify-end">
-                   ${token.usdBalance}
+                     ${Number(token.usdBalance).toFixed(2)}
                 </div>
-                {/* <div className="font-slim flex justify-end">
-                    {token.balance}
-                </div> */}
+
             </div>
         </div>
     </div>

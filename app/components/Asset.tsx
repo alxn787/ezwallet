@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { NextButton, SecondaryButton } from "./Button";
-import { useEffect, useState } from "react";
+import { Children, useEffect, useState } from "react";
 import axios from "axios";
 import { useTokens } from "../api/Hooks/useTokens";
 import { TokenList } from "./TokenList";
@@ -15,6 +15,11 @@ export default function Asset({publicKey}:{
     const router = useRouter();
     const [copied,setCopied] = useState(false);
     const { tokenBalances, loading} = useTokens(publicKey);
+    const [selectedTabs, setSelectedTabs] = useState("Tokens");
+
+    type Tab = "Tokens" | "Add funds" | "Send" | "Swap" | "Withdraw"
+
+    const Tabs:Tab[]= ["Tokens" , "Add funds" , "Send" , "Swap" , "Withdraw"]
 
     useEffect(()=>{
         if(copied){
@@ -65,16 +70,13 @@ export default function Asset({publicKey}:{
                     <SecondaryButton children = {copied?"Copied":"Your Wallet Address"} onClick={()=>{navigator.clipboard.writeText(publicKey); setCopied(true)}}/>
                     </div>
                 </div>
-                <div className="mt-3 flex justify-between">
-                    <NextButton children = "Send" onClick={()=>alert("hi")}/>
-                    <NextButton children = "Add Funds" onClick={()=>alert("hi")}/>
-                    <NextButton children = "Withdraw" onClick={()=>alert("hi")}/>
-                    <NextButton children = "Swap" onClick={()=>alert("hi")}/>
-                </div>
-
                 <div>
-                    <TokenList tokens = {tokenBalances?.tokens || []}/>
+                    {Tabs.map((tab) => <NextButton active = {tab === selectedTabs} children = {tab} onClick={()=>setSelectedTabs(tab)}/>)}
                 </div>
+                {selectedTabs === 'Tokens'? <div className="p-4">
+                    <TokenList tokens = {tokenBalances?.tokens || []}/>
+                </div> : null}
+
             </div>
         </div>
     )
