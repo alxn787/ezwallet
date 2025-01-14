@@ -12,7 +12,7 @@ export function TokenList({tokens}: {
 function TokenRow({token}: {
     token: TokenwithBalance
 }) {
-    return <div className="flex justify-between items-center">
+    return <div className="flex justify-between items-center border p-2 rounded-lg my-2 ">
         <div className="flex">
             <div>
                 <img src={token.image} className="h-10 w-10 rounded-full mr-2" />

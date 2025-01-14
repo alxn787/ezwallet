@@ -23,7 +23,9 @@ async  function getAccountBalance(token:{
     name:string;
     mint:string;
     native:Boolean; 
-} ,address:string){
+    decimals:number;
+} , address:string
+){
     if(token.native){
         const balance = await connection.getBalance(new PublicKey(address))
         return balance / LAMPORTS_PER_SOL;
@@ -32,8 +34,7 @@ async  function getAccountBalance(token:{
 
     try{
         const account = await getAccount(connection,ata)
-        const mint = await getMint(connection,new PublicKey(token.mint) )
-        return Number(account.amount)/ (10 ** mint.decimals)
+        return Number(account.amount)/ (10 ** token.decimals)
     }catch(e){
         return 0;
     }

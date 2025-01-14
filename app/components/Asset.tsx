@@ -7,6 +7,7 @@ import { Children, useEffect, useState } from "react";
 import axios from "axios";
 import { useTokens } from "../api/Hooks/useTokens";
 import { TokenList } from "./TokenList";
+import { Swap } from "./Swap";
 
 export default function Asset({publicKey}:{
     publicKey : string
@@ -19,7 +20,12 @@ export default function Asset({publicKey}:{
 
     type Tab = "Tokens" | "Add funds" | "Send" | "Swap" | "Withdraw"
 
-    const Tabs:Tab[]= ["Tokens" , "Add funds" , "Send" , "Swap" , "Withdraw"]
+    const Tabs:{id:Tab, name:string}[]= [
+        {id:"Tokens",name:"Tokens" },
+        {id:"Add funds", name:"Add Funds"},
+        {id:"Send", name:"Send"},
+        {id:"Withdraw", name:"Withdraw"},
+        {id:"Swap", name:"Swap"}]
 
     useEffect(()=>{
         if(copied){
@@ -42,9 +48,8 @@ export default function Asset({publicKey}:{
     if(!session.data?.user){
         router.push("/")
     }
-    
     return(
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center">
             <div className="w-[760px] rounded-lg bg-white shadow-lg p-8">
                 <div className="flex  items-center">
                     <div>
@@ -70,13 +75,15 @@ export default function Asset({publicKey}:{
                     <SecondaryButton children = {copied?"Copied":"Your Wallet Address"} onClick={()=>{navigator.clipboard.writeText(publicKey); setCopied(true)}}/>
                     </div>
                 </div>
-                <div>
-                    {Tabs.map((tab) => <NextButton active = {tab === selectedTabs} children = {tab} onClick={()=>setSelectedTabs(tab)}/>)}
+                <div className="mt-4">
+                    {Tabs.map((tab) => <NextButton active = {tab.id === selectedTabs} children = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
                 </div>
-                {selectedTabs === 'Tokens'? <div className="p-4">
+            </div>
+            <div className="bg-slate-100 w-[760px] rounded-lg shadow-lg p-8">
+                {selectedTabs === 'Tokens'? <div className="p-4 ">
                     <TokenList tokens = {tokenBalances?.tokens || []}/>
                 </div> : null}
-
+                {selectedTabs === 'Swap'? <div className="my-3"><Swap publicKey={publicKey} tokenBalances={tokenBalances} setSelectedTabs={setSelectedTabs}/></div> : null}
             </div>
         </div>
     )
