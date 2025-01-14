@@ -45,7 +45,7 @@ export async function POST(req:NextRequest){
     ).json();
 
     const swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
-    var transaction = VersionedTransaction.deserialize(swapTransactionBuf);
+    let transaction = VersionedTransaction.deserialize(swapTransactionBuf);
     const privatekey = getPrivateKeyFromDb(solwallet.privateKey)
     transaction.sign([privatekey]);
 

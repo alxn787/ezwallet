@@ -3,8 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { NextButton, SecondaryButton } from "./Button";
-import { Children, useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useTokens } from "../api/Hooks/useTokens";
 import { TokenList } from "./TokenList";
 import { Swap } from "./Swap";
@@ -15,7 +14,7 @@ export default function Asset({publicKey}:{
     const session = useSession();
     const router = useRouter();
     const [copied,setCopied] = useState(false);
-    const { tokenBalances, loading} = useTokens(publicKey);
+    const { tokenBalances} = useTokens(publicKey);
     const [selectedTabs, setSelectedTabs] = useState("Tokens");
 
     type Tab = "Tokens" | "Add funds" | "Send" | "Swap" | "Withdraw"
@@ -29,7 +28,7 @@ export default function Asset({publicKey}:{
 
     useEffect(()=>{
         if(copied){
-            let timeout = setTimeout(()=>setCopied(false),3000)
+            const timeout = setTimeout(()=>setCopied(false),3000)
         
         return ()=> {
             clearTimeout(timeout)

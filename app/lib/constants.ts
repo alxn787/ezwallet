@@ -1,7 +1,7 @@
 import { Connection } from "@solana/web3.js"
 import axios from "axios";
 import { SUPPORTED_TOKENS } from "./tokens";
-let prices: {[key:string]:{
+const prices: {[key:string]:{
     price: string;
 }} = {};
 

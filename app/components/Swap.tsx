@@ -4,16 +4,15 @@ import { useEffect, useState } from "react"
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens"
 import { TokenwithBalance } from "../api/Hooks/useTokens"
 import { Button } from "./Button"
-import { useRouter } from "next/navigation"
 import axios from "axios"
 
 export function Swap({publicKey, tokenBalances,setSelectedTabs}: {
     publicKey: string;
     tokenBalances: {
-        TotalBalance: Number;
+        TotalBalance: number;
         tokens: TokenwithBalance[];
     } | null;
-    setSelectedTabs:Function;
+    setSelectedTabs:(x:string)=>void;
 }) {
     const [baseAsset, setBaseAsset] = useState(SUPPORTED_TOKENS[0])
     const [quoteAsset, setQuoteAsset] = useState(SUPPORTED_TOKENS[1])
@@ -21,7 +20,6 @@ export function Swap({publicKey, tokenBalances,setSelectedTabs}: {
     const [quoteAmount, setQuoteAmount] = useState<string>("")
     const [qouteLoading,setQuoteLoading] = useState<boolean>(false)
     const [quoteResponse,setquoteResponse] = useState(null)
-    const router = useRouter()
 
     useEffect(()=>{
         if(!baseAmount){

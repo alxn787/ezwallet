@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 export const Button = ({ children, onClick }: { 
   children: React.ReactNode; 
   onClick: () => void; 
@@ -33,7 +31,7 @@ export const SecondaryButton = ({ children, onClick }: {
 };
 
 export const NextButton = ({active,children, onClick }: { 
-    active: Boolean;
+    active: boolean;
     children: React.ReactNode; 
     onClick: () => void;
   }) => {
