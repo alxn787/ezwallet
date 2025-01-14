@@ -12,6 +12,10 @@ export interface SessionWithUser extends Session {
     };
 }
 
+interface Token {
+    uid?: string;
+}
+
 export const authConfig = {
     secret: process.env.NEXTAUTH_SECRET || 'secr3t',
     providers: [
@@ -21,29 +25,29 @@ export const authConfig = {
         })
     ],
     callbacks: {
-        session: ({ session, token }: { session: Session; token: any }): SessionWithUser => {
+        session: ({ session, token }: { session: SessionWithUser; token: Token }): SessionWithUser => {
             if (session.user && token.uid) {
-                //@ts-ignore
                 session.user.uid = token.uid ?? "";
             }
-            return session as SessionWithUser; 
+            return session;
         },
-        
-        // Callback for JWT token creation
-        async jwt({ token, account, profile }: { token: any; account: Account | null; profile: Profile | null }) {
-            const user = await db.user.findFirst({
-                where: {
-                    sub: account?.providerAccountId ?? ""
+
+        async jwt({ token, account }: { token: Token; account: Account | null }): Promise<Token> {
+            if (account) {
+                const user = await db.user.findFirst({
+                    where: {
+                        sub: account.providerAccountId ?? ""
+                    }
+                });
+
+                if (user) {
+                    token.uid = user.id;
                 }
-            });
-            
-            if (user) {
-                token.uid = user.id;
             }
             return token;
         },
 
-        async signIn({ user, account, profile, email, credentials }: { user: any; account: any; profile: any; email: string | null; credentials: any }) {
+        async signIn({ user, account, profile }: { user: { email: string }; account: Account | null; profile: Profile | null }) {
             if (account?.provider === "google") {
                 const userEmail = user.email;
                 if (!userEmail) {
@@ -62,13 +66,13 @@ export const authConfig = {
 
                 const keypair = Keypair.generate();
                 const publicKey = keypair.publicKey.toBase58();
-                const privateKey = keypair.secretKey.toString(); 
+                const privateKey = keypair.secretKey.toString();
 
                 await db.user.create({
                     data: {
                         username: userEmail,
-                        name: profile?.name ?? "Unknown", 
-                        profilePicture: profile?.picture ?? "",
+                        name: profile?.name ?? "Unknown",
+                        profilePicture: profile?.image ?? "",
                         Provider: "Google",
                         sub: account?.providerAccountId ?? "",
                         Solwallet: {

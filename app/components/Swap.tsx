@@ -6,8 +6,7 @@ import { TokenwithBalance } from "../api/Hooks/useTokens"
 import { Button } from "./Button"
 import axios from "axios"
 
-export function Swap({publicKey, tokenBalances,setSelectedTabs}: {
-    publicKey: string;
+export function Swap({ tokenBalances,setSelectedTabs}: {
     tokenBalances: {
         TotalBalance: number;
         tokens: TokenwithBalance[];

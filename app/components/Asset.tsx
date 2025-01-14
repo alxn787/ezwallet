@@ -82,7 +82,7 @@ export default function Asset({publicKey}:{
                 {selectedTabs === 'Tokens'? <div className="p-4 ">
                     <TokenList tokens = {tokenBalances?.tokens || []}/>
                 </div> : null}
-                {selectedTabs === 'Swap'? <div className="my-3"><Swap publicKey={publicKey} tokenBalances={tokenBalances} setSelectedTabs={setSelectedTabs}/></div> : null}
+                {selectedTabs === 'Swap'? <div className="my-3"><Swap tokenBalances={tokenBalances} setSelectedTabs={setSelectedTabs}/></div> : null}
             </div>
         </div>
     )
