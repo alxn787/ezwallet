@@ -1,15 +1,14 @@
 import GoogleProvider from "next-auth/providers/google";
 import db from "@/app/db";
 import { Keypair } from "@solana/web3.js";
+import { Session, Account, Profile } from 'next-auth';
 
-import { Session } from 'next-auth';
-
-export interface session extends Session {
+export interface SessionWithUser extends Session {
     user: {
-      email: string;
-      name: string;
-      image: string
-      uid: string;
+        email: string;
+        name: string;
+        image: string;
+        uid: string;
     };
 }
 
@@ -22,37 +21,40 @@ export const authConfig = {
         })
     ],
     callbacks: {
-        session: ({ session, token }: any): session => {
-            const newSession: session = session as session;
-            if (newSession.user && token.uid) {
-              // @ts-ignore
-              newSession.user.uid = token.uid ?? "";
+        session: ({ session, token }: { session: Session; token: any }): SessionWithUser => {
+            if (session.user && token.uid) {
+                //@ts-ignore
+                session.user.uid = token.uid ?? "";
             }
-            return newSession!;
+            return session as SessionWithUser; 
         },
-        async jwt({ token, account, profile }: any) {
+        
+        // Callback for JWT token creation
+        async jwt({ token, account, profile }: { token: any; account: Account | null; profile: Profile | null }) {
             const user = await db.user.findFirst({
                 where: {
                     sub: account?.providerAccountId ?? ""
                 }
-            })
+            });
+            
             if (user) {
-              token.uid = user.id
+                token.uid = user.id;
             }
-            return token
+            return token;
         },
-        async signIn({ user, account, profile, email, credentials }: any) {
+
+        async signIn({ user, account, profile, email, credentials }: { user: any; account: any; profile: any; email: string | null; credentials: any }) {
             if (account?.provider === "google") {
-                const email = user.email;
-                if (!email) {
-                    return false
+                const userEmail = user.email;
+                if (!userEmail) {
+                    return false;
                 }
 
                 const userDb = await db.user.findFirst({
                     where: {
-                        username: email
+                        username: userEmail
                     }
-                })
+                });
 
                 if (userDb) {
                     return true;
@@ -60,20 +62,19 @@ export const authConfig = {
 
                 const keypair = Keypair.generate();
                 const publicKey = keypair.publicKey.toBase58();
-                const privateKey = keypair.secretKey;
+                const privateKey = keypair.secretKey.toString(); 
 
                 await db.user.create({
                     data: {
-                        username: email,
-                        name: profile?.name,
-                        //@ts-ignore
-                        profilePicture: profile?.picture,
+                        username: userEmail,
+                        name: profile?.name ?? "Unknown", 
+                        profilePicture: profile?.picture ?? "",
                         Provider: "Google",
-                        sub: account.providerAccountId,
+                        sub: account?.providerAccountId ?? "",
                         Solwallet: {
                             create: {
                                 publicKey: publicKey,
-                                privateKey: privateKey.toString()
+                                privateKey: privateKey
                             }
                         },
                         Usdwallet: {
@@ -82,13 +83,12 @@ export const authConfig = {
                             }
                         }
                     }
-                })
+                });
 
                 return true;
-
             }
-            
-            return false
-        },
+
+            return false;
+        }
     }
-}
+};
