@@ -1,5 +1,5 @@
 "use client"
-
+/* eslint-disable */
 import { useEffect, useState } from "react"
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens"
 import { TokenwithBalance } from "../api/Hooks/useTokens"

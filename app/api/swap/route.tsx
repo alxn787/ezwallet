@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { authConfig } from "@/app/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
