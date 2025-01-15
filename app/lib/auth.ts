@@ -1,19 +1,16 @@
 import GoogleProvider from "next-auth/providers/google";
 import db from "@/app/db";
 import { Keypair } from "@solana/web3.js";
-import { Session, Account, Profile } from 'next-auth';
 
-export interface SessionWithUser extends Session {
+import { Session } from 'next-auth';
+
+export interface session extends Session {
     user: {
-        email: string;
-        name: string;
-        image: string;
-        uid: string;
+      email: string;
+      name: string;
+      image: string
+      uid: string;
     };
-}
-
-interface Token {
-    uid?: string;
 }
 
 export const authConfig = {
@@ -25,40 +22,37 @@ export const authConfig = {
         })
     ],
     callbacks: {
-        session: ({ session, token }: { session: SessionWithUser; token: Token }): SessionWithUser => {
-            if (session.user && token.uid) {
-                session.user.uid = token.uid ?? "";
+        session: ({ session, token }: any): session => {
+            const newSession: session = session as session;
+            if (newSession.user && token.uid) {
+              // @ts-ignore
+              newSession.user.uid = token.uid ?? "";
             }
-            return session;
+            return newSession!;
         },
-
-        async jwt({ token, account }: { token: Token; account: Account | null }): Promise<Token> {
-            if (account) {
-                const user = await db.user.findFirst({
-                    where: {
-                        sub: account.providerAccountId ?? ""
-                    }
-                });
-
-                if (user) {
-                    token.uid = user.id;
+        async jwt({ token, account, profile }: any) {
+            const user = await db.user.findFirst({
+                where: {
+                    sub: account?.providerAccountId ?? ""
                 }
+            })
+            if (user) {
+              token.uid = user.id
             }
-            return token;
+            return token
         },
-
-        async signIn({ user, account, profile }: { user: { email: string }; account: Account | null; profile: Profile | null }) {
+        async signIn({ user, account, profile, email, credentials }: any) {
             if (account?.provider === "google") {
-                const userEmail = user.email;
-                if (!userEmail) {
-                    return false;
+                const email = user.email;
+                if (!email) {
+                    return false
                 }
 
                 const userDb = await db.user.findFirst({
                     where: {
-                        username: userEmail
+                        username: email
                     }
-                });
+                })
 
                 if (userDb) {
                     return true;
@@ -66,19 +60,20 @@ export const authConfig = {
 
                 const keypair = Keypair.generate();
                 const publicKey = keypair.publicKey.toBase58();
-                const privateKey = keypair.secretKey.toString();
+                const privateKey = keypair.secretKey;
 
                 await db.user.create({
                     data: {
-                        username: userEmail,
-                        name: profile?.name ?? "Unknown",
-                        profilePicture: profile?.image ?? "",
+                        username: email,
+                        name: profile?.name,
+                        //@ts-ignore
+                        profilePicture: profile?.picture,
                         Provider: "Google",
-                        sub: account?.providerAccountId ?? "",
+                        sub: account.providerAccountId,
                         Solwallet: {
                             create: {
                                 publicKey: publicKey,
-                                privateKey: privateKey
+                                privateKey: privateKey.toString()
                             }
                         },
                         Usdwallet: {
@@ -87,12 +82,13 @@ export const authConfig = {
                             }
                         }
                     }
-                });
+                })
 
                 return true;
-            }
 
-            return false;
-        }
+            }
+            
+            return false
+        },
     }
-};
+}

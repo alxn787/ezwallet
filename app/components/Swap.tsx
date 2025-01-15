@@ -11,7 +11,7 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
         TotalBalance: number;
         tokens: TokenwithBalance[];
     } | null;
-    setSelectedTabs:(x:string)=>void;
+    setSelectedTabs:(x:string)=>void
 }) {
     const [baseAsset, setBaseAsset] = useState(SUPPORTED_TOKENS[0])
     const [quoteAsset, setQuoteAsset] = useState(SUPPORTED_TOKENS[1])
