@@ -75,14 +75,29 @@ export default function Asset({publicKey}:{
                     </div>
                 </div>
                 <div className="mt-4">
-                    {Tabs.map((tab) => <NextButton key={tab.id} active = {tab.id === selectedTabs} insidevalue = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
+                    {Tabs.map((tab) => (
+                        <NextButton 
+                            key={tab.id} 
+                            active={tab.id === selectedTabs} 
+                            insidevalue={tab.name} 
+                            onClick={() => setSelectedTabs(tab.id)} 
+                        />
+                    ))}
                 </div>
+
             </div>
             <div className="bg-slate-100 w-[760px] rounded-lg shadow-lg p-8">
-                {selectedTabs === 'Tokens'? <div className="p-4 ">
-                    <TokenList tokens = {tokenBalances?.tokens || []}/>
+                {selectedTabs === 'Tokens'? 
+                <div className="p-4 ">
+                    <TokenList 
+                        tokens = {tokenBalances?.tokens || []}/>
                 </div> : null}
-                {selectedTabs === 'Swap'? <div className="my-3"><Swap tokenBalances={tokenBalances} setSelectedTabs={setSelectedTabs}/></div> : null}
+                {selectedTabs === 'Swap'? 
+                <div className="my-3">
+                    <Swap 
+                        tokenBalances={tokenBalances} 
+                        setSelectedTabs={setSelectedTabs}/>
+                </div> : null}
             </div>
         </div>
     )
