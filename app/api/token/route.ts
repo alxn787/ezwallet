@@ -12,7 +12,7 @@ export async function GET(req:NextRequest){
      const tokens = supportedTokens.map((token,index)=>({
         ...token,
         balance: balances[index],
-        usdBalance:  balances[index] * Number(token.price)   
+        usdBalance: balances[index] * Number(token.price)   
     }) )
      return NextResponse.json({
         tokens,
@@ -37,7 +37,8 @@ async  function getAccountBalance(token:{
         const account = await getAccount(connection,ata)
         return Number(account.amount)/ (10 ** token.decimals)
     }catch(e){
-        return e;
+        console.error(`Failed to fetch account balance for token ${token.name}:`, e);
+        return 0;
     }
 
 }
