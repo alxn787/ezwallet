@@ -75,7 +75,7 @@ export default function Asset({publicKey}:{
                     </div>
                 </div>
                 <div className="mt-4">
-                    {Tabs.map((tab) => <NextButton active = {tab.id === selectedTabs} insidevalue = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
+                    {Tabs.map((tab) => <NextButton key={tab.id} active = {tab.id === selectedTabs} insidevalue = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
                 </div>
             </div>
             <div className="bg-slate-100 w-[760px] rounded-lg shadow-lg p-8">
