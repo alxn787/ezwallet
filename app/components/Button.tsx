@@ -29,11 +29,10 @@ export const SecondaryButton = ({ insidevalue, onClick }: {
   );
 };
 
-export const NextButton = ({active,insidevalue, onClick, key }: { 
+export const NextButton = ({active,insidevalue, onClick}: { 
     active: boolean;
     insidevalue: React.ReactNode; 
     onClick: () => void;
-    key:Tab
   }) => {
     return (
       <button
