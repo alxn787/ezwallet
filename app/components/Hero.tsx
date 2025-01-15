@@ -20,10 +20,10 @@ export const Hero = ()=>{
             Trade tokens with ease
             </div>
             {session.data?.user? <div className="mt-8">
-                <Button  children = "Go to Dashboard" onClick={()=>router.push("http://localhost:3000/dashboard")}></Button>
+                <Button  insidevalue= "Go to Dashboard" onClick={()=>router.push("http://localhost:3000/dashboard")}></Button>
             </div> : 
             <div className="mt-8">
-                <Button  children = "Sign Up With Google" onClick={()=>signIn("google")}></Button>
+                <Button  insidevalue= "Sign Up With Google" onClick={()=>signIn("google")}></Button>
             </div>}
             
         </div>

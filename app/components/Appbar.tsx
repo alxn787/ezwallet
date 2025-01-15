@@ -10,7 +10,7 @@ export default function Appbar(){
                 EZWALLET
             </div>
             <div>
-                {session.data?.user ? <Button children = "Sign Out" onClick={() => signOut()}/> : <Button children = "Sign In" onClick={() => signIn("google")}/>}
+                {session.data?.user ? <Button insidevalue = "Sign Out" onClick={() => signOut()}/> : <Button insidevalue = "Sign In" onClick={() => signIn("google")}/>}
             </div>
 
         </div>

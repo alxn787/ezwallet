@@ -65,9 +65,9 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
             />
             
             <div className="flex justify-between mt-5">
-                <Button children="Cancel" onClick={() => setSelectedTabs("Tokens")} />
+                <Button insidevalue="Cancel" onClick={() => setSelectedTabs("Tokens")} />
                 <Button 
-                children="Confirm and Swap" 
+                insidevalue="Confirm and Swap" 
                 onClick={() => axios.post('/api/swap',{quoteResponse})} />
             </div>
         </div>

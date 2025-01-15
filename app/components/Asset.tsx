@@ -71,11 +71,11 @@ export default function Asset({publicKey}:{
                         </div>
                     </div>
                     <div>
-                    <SecondaryButton children = {copied?"Copied":"Your Wallet Address"} onClick={()=>{navigator.clipboard.writeText(publicKey); setCopied(true)}}/>
+                    <SecondaryButton insidevalue = {copied?"Copied":"Your Wallet Address"} onClick={()=>{navigator.clipboard.writeText(publicKey); setCopied(true)}}/>
                     </div>
                 </div>
                 <div className="mt-4">
-                    {Tabs.map((tab) => <NextButton active = {tab.id === selectedTabs} children = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
+                    {Tabs.map((tab) => <NextButton active = {tab.id === selectedTabs} insidevalue = {tab.name} onClick={()=>setSelectedTabs(tab.id)}/>)}
                 </div>
             </div>
             <div className="bg-slate-100 w-[760px] rounded-lg shadow-lg p-8">

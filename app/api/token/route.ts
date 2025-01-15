@@ -36,7 +36,7 @@ async  function getAccountBalance(token:{
         const account = await getAccount(connection,ata)
         return Number(account.amount)/ (10 ** token.decimals)
     }catch(e){
-        return 0;
+        return e;
     }
 
 }
