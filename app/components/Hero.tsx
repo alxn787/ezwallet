@@ -20,7 +20,7 @@ export const Hero = ()=>{
             Trade tokens with ease
             </div>
             {session.data?.user? <div className="mt-8">
-                <Button  insidevalue= "Go to Dashboard" onClick={()=>router.push("https://ezwallet-aqiajvx6n-alen-alex-abrahams-projects.vercel.app/dashboard")}></Button>
+                <Button  insidevalue= "Go to Dashboard" onClick={()=>router.push("/dashboard")}></Button>
             </div> : 
             <div className="mt-8">
                 <Button  insidevalue= "Sign Up With Google" onClick={()=>signIn("google")}></Button>
