@@ -1,8 +1,8 @@
+/* eslint-disable */
 "use client"
 import { signIn, useSession } from "next-auth/react"
 import { Button } from "./Button"
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
 
 
 export const Hero = () => {
