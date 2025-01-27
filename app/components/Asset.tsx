@@ -48,7 +48,7 @@ export default function Asset({publicKey}:{
         router.push("/")
     }
     return(
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-20 ">
             <div className="w-[760px] rounded-lg bg-white shadow-lg p-8">
                 <div className="flex  items-center">
                     <div>
