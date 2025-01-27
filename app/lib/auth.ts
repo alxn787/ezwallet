@@ -1,8 +1,9 @@
-/* eslint-disable */
+
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import db from "@/app/db";
 import { Keypair } from "@solana/web3.js";
-import { Session } from 'next-auth';
+import { Session } from "next-auth";
 
 export interface session extends Session {
     user: {
@@ -13,82 +14,128 @@ export interface session extends Session {
     };
 }
 
+
+
 export const authConfig = {
-    secret: process.env.NEXTAUTH_SECRET || 'secr3t',
-    providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
-        })
-    ],
-    callbacks: {
-        session: ({ session, token }: any): session => {
-            const newSession: session = session as session;
-            if (newSession.user && token.uid) {
-              // @ts-ignore
-              newSession.user.uid = token.uid ?? "";
-            }
-            return newSession!;
-        },
-        async jwt({ token, account}: any) {
-            const user = await db.user.findFirst({
-                where: {
-                    sub: account?.providerAccountId ?? ""
-                }
-            })
-            if (user) {
-              token.uid = user.id
-            }
-            return token
-        },
-        async signIn({ user, account, profile}: any) {
-            if (account?.provider === "google") {
-                const email = user.email;
-                if (!email) {
-                    return false
-                }
+  secret: process.env.NEXTAUTH_SECRET || 'secr3t',
+  providers: [
+    // Credentials Provider
+    CredentialsProvider({
+      credentials: {
+        username: { label: "Username", type: "text", placeholder: "Enter your username" },
+        password: { label: "Password", type: "password", placeholder: "Enter your password" },
+      },
+      async authorize(credentials, req) {
+        console.log("authorize called with credentials:", credentials);
 
-                const userDb = await db.user.findFirst({
-                    where: {
-                        username: email
-                    }
-                })
+        // Example of hardcoded user validation for testing
+        // if (credentials?.username === "alxn787" && credentials?.password === "password") {
+        //   return {
+        //     id: "1",
+        //     username: "alxn787",
+        //     email: "alxn787@gmail.com",
+        //   };
+        // }
 
-                if (userDb) {
-                    return true;
-                }
+        // Check your database for valid user
+        const user = await db.user.findFirst({
+          where: {
+            username: "alenalexm50@gmail.com",
+          },
+        });
 
-                const keypair = Keypair.generate();
-                const publicKey = keypair.publicKey.toBase58();
-                const privateKey = keypair.secretKey;
+        if (!user) {
+          console.error("User not found");
+          return null;
+        }
 
-                await db.user.create({
-                    data: {
-                        username: email,
-                        name: profile?.name,
-                        //@ts-ignore
-                        profilePicture: profile?.picture,
-                        Provider: "Google",
-                        sub: account.providerAccountId,
-                        Solwallet: {
-                            create: {
-                                publicKey: publicKey,
-                                privateKey: privateKey.toString()
-                            }
-                        },
-                        Usdwallet: {
-                            create: {
-                                balance: 0
-                            }
-                        }
-                    }
-                })
+        return user
+      },
+    }),
 
-                return true;
+    // Google Provider
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    }),
+  ],
 
-            }
-            
-            return false
-        },
-    }
-}
+  callbacks: {
+    async session({ session, token }:any) {
+      console.log("Session callback:", { session, token });
+      if (session.user && token.uid) {
+        session.user.uid = token.uid; 
+      }
+      return session;
+    },
+
+    async jwt({ token, account, user }:any) {
+      console.log("JWT callback:", { token, account, user });
+      if (account?.provider === "google") {
+
+        const dbUser = await db.user.findFirst({
+          where: {
+            sub: account.providerAccountId,
+          },
+        });
+
+        if (dbUser) {
+          token.uid = dbUser.id;
+        }
+      }
+
+      if (user) {
+        token.uid = user.id; 
+      }
+
+      return token;
+    },
+
+    async signIn({ user, account, profile }:any) {
+      console.log("SignIn callback:", { user, account, profile });
+
+      if (account?.provider === "google") {
+        const email = user.email;
+
+        // Check if user exists in the database
+        const dbUser = await db.user.findFirst({
+          where: { username: email },
+        });
+
+        if (dbUser) {
+          return true; 
+        }
+
+        // Create new user in the database
+        const keypair = Keypair.generate();
+        const publicKey = keypair.publicKey.toBase58();
+        const privateKey = keypair.secretKey;
+
+        await db.user.create({
+          data: {
+            username: email,
+            name: profile?.name,
+            profilePicture: profile?.picture,
+            Provider: "Google",
+            sub: account.providerAccountId,
+            Solwallet: {
+              create: {
+                publicKey: publicKey,
+                privateKey: privateKey.toString(),
+              },
+            },
+            Usdwallet: {
+              create: {
+                balance: 0,
+              },
+            },
+          },
+        });
+
+        return true;
+      }
+
+      return true; 
+    },
+  },
+};

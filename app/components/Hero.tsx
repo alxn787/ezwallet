@@ -2,6 +2,7 @@
 import { signIn, useSession } from "next-auth/react"
 import { Button } from "./Button"
 import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 
 
 export const Hero = () => {
@@ -32,7 +33,10 @@ export const Hero = () => {
                     />
                     <Button
                         insidevalue="View Demo"
-                        onClick={() => signIn("google")}
+                        onClick={() => signIn('credentials',{
+                            email:"demouser",
+                            password:"demo123"
+                        })}
                     />
                 </div>
             )}
