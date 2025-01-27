@@ -48,6 +48,7 @@ export const authConfig = {
           console.error("User not found");
           return null;
         }
+        
 
         return user
       },

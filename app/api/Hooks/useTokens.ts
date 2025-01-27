@@ -18,6 +18,7 @@ export function useTokens(address:string){
         axios.get(`/api/token?address=${address}`)
         .then(res => {
             SetTokenBalance(res.data)
+            console.log(res.data);
             SetLoading(false)
         })
     },[address])

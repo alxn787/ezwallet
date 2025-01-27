@@ -9,7 +9,7 @@ async function getUserWallet() {
 
     const userWallet = await db.solwallet.findFirst({
         where: {
-            UserId: session?.user?.uid
+            UserId: session?.user?.uid 
         },
         select: {
             publicKey: true
@@ -37,7 +37,7 @@ export default async function Dashboard(){
     }
  return(
     <div>
-        <Asset publicKey ={userWallet.userWallet?.publicKey?? ""}/>
+        <Asset publicKey ={userWallet.userWallet?.publicKey?? "8fCXUDCkvhEQkYNyMbsWgYsaqikorojdv2hgfezfvbdD"}/>
     </div>
  )
 }
