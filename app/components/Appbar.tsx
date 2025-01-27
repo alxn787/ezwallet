@@ -5,7 +5,7 @@ import { Button } from "./Button";
 export default function Appbar(){
     const session = useSession();
     return (
-        <div className="p-2  flex justify-between text-white bg-gradient-to-r from-[#090808] via-[#0c111f] to-[#0d111f] font-extrabold text-xl">
+        <div className=" top-0 z-40 p-2  flex justify-between text-white bg-gradient-to-r from-[#090808] via-[#0c111f] to-[#0d111f] font-extrabold text-xl">
             <div>
                 EZWALLET
             </div>
