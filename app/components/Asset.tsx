@@ -52,7 +52,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
 
   return (
     <div className="flex flex-col items-center pt-20">
-        <div className="w-[95%] max-w-[650px] rounded-t-lg bg-[#0f0e14]  text-white shadow-lg p-8">
+        <div className="w-[95%] max-w-[650px] rounded-t-lg bg-[#090808]  text-white shadow-lg p-8  border-x border-t border-slate-800  ">
             <div className="flex flex-col sm:flex-row items-center">
                 <div>
                     <img
@@ -87,7 +87,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ))}
             </div>
         </div>
-            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg p-4 bg-[#0f0e14]">
+            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg p-4 bg-[#090808] border-x border-b border-slate-800">
             {selectedTabs === "Tokens" ? (
             <div className="p-4">
                 <TokenList tokens={tokenBalances?.tokens || []} />

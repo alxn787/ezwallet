@@ -53,8 +53,8 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
             <div className="relative flex items-center justify-center ">
                 <div className="w-full  "></div>
                     <div className="absolute bg-black p-2 rounded-full w-[42px] h-[42px] shadow-md flex justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#212127" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path fill="#212127" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#212127" viewBox="0 0 24 24"  stroke="currentColor">
+                    <path  d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                     </svg>
                 </div>
             </div>
@@ -148,7 +148,7 @@ function AssetSelector({ selectedToken, onselect }: { selectedToken: TokenDetail
                     }
                 }}
                 id="countries"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5 "
+                className="bg-black text-white text-sm rounded-lg w-20 p-3 "
             >
                 <option value={selectedToken.name}>{selectedToken.name}</option>
                 {SUPPORTED_TOKENS.filter(x => x.name !== selectedToken.name).map(token => <option key={token.name} value={token.name}>{token.name}</option>)}
