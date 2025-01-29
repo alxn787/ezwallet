@@ -40,16 +40,10 @@ export default function Asset({ publicKey }: { publicKey: string }) {
       </div>
     );
   }
-  useEffect(() => {
-    const redirectIfNeeded = async () => {
-      if (!session.data?.user) {
-        await router.push("/");
-      }
-    };
-    redirectIfNeeded();
-  }, [session.data, router]);
-  
-  
+
+  if (!session.data?.user) {
+    router.push("/");
+  }
 
   return (
     <div className="flex flex-col items-center pt-20">
