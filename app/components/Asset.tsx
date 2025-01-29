@@ -7,7 +7,7 @@ import { useTokens } from "../api/Hooks/useTokens";
 import { TokenList } from "./TokenList";
 import { Swap } from "./Swap";
 import Recieve from "./Recieve";
-import axios from "axios";
+
 
 
 
@@ -17,15 +17,14 @@ export default function Asset({ publicKey }: { publicKey: string }) {
   const [copied, setCopied] = useState(false);
   const { tokenBalances } = useTokens(publicKey);
   const [selectedTabs, setSelectedTabs] = useState("Tokens");
-  const [walletTab, setWalletTab] = useState(false);
+ 
 
-  type Tab = "Tokens" | "Add funds" | "Send" | "Swap" | "Withdraw";
+  type Tab = "Tokens" | "Recieve" | "Send" | "Swap";
 
   const Tabs: { id: Tab; name: string }[] = [
     { id: "Tokens", name: "Tokens" },
-    { id: "Add funds", name: "Add Funds" },
+    { id: "Recieve", name: "Recieve" },
     { id: "Send", name: "Send" },
-    { id: "Withdraw", name: "Withdraw" },
     { id: "Swap", name: "Swap" },
   ];
 
@@ -50,13 +49,10 @@ export default function Asset({ publicKey }: { publicKey: string }) {
     router.push("/");
   }
 
-  function ToggleWallet(){
-    setWalletTab(!walletTab)
-}
 
   return (
     <div className="flex flex-col items-center pt-20">
-        <div className="w-[95%] max-w-[760px] rounded-lg bg-white shadow-lg p-8">
+        <div className="w-[95%] max-w-[650px] rounded-lg bg-white shadow-lg p-8">
             <div className="flex flex-col sm:flex-row items-center">
                 <div>
                     <img
@@ -79,18 +75,8 @@ export default function Asset({ publicKey }: { publicKey: string }) {
                         </div>
                         <div className="text-2xl sm:text-4xl text-slate-500">USD</div>
                     </div>
-                <div className="mt-4 sm:mt-0">
-                    <SecondaryButton
-                        insidevalue={"Recieve"}
-                        onClick={() => {
-                        navigator.clipboard.writeText(publicKey);
-                        setCopied(true);
-                        ToggleWallet()
-                    }}
-                    />
-                </div>
             </div>
-            <div className="mt-4 flex flex-wrap justify-center sm:justify-start">
+            <div className="mt-4 flex justify-center sm:justify-center">
             {Tabs.map((tab) => (
                 <NextButton
                 key={tab.id}
@@ -101,7 +87,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ))}
             </div>
         </div>
-        <div className="bg-slate-100 w-[95%] max-w-[760px] rounded-lg shadow-lg p-8 mt-4">
+        <div className="bg-slate-100 w-[95%] max-w-[650px] rounded-lg shadow-lg p-8 mt-4">
             {selectedTabs === "Tokens" ? (
             <div className="p-4">
                 <TokenList tokens={tokenBalances?.tokens || []} />
@@ -116,7 +102,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             </div>
             ) : null}
         </div>
-        {walletTab? <Recieve setWalletTab = {setWalletTab} address = {publicKey}/> : null}
+        {selectedTabs === "Recieve"? <Recieve setSelectedTabs = {setSelectedTabs} address = {publicKey}/> : null}
     </div>
   );
 }

@@ -38,7 +38,7 @@ export const NextButton = ({active,insidevalue, onClick}: {
       <button
         type="button"
         onClick={onClick} 
-        className={`text-white border border-gray-300 focus:outline-none hover:bg-blue-600 rounded-lg text-md px-15 w-32 font-semibold py-2.5 me-2 ${active? "bg-blue-500":"bg-blue-400"}`}>
+        className={`text-white border border-gray-300 focus:outline-none hover:bg-blue-600 rounded-lg text-md px-15 w-32 font-semibold py-2.5 me-4 ${active? "bg-blue-500":"bg-blue-400"}`}>
         {insidevalue}
       </button>
     );

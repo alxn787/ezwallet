@@ -1,7 +1,7 @@
 import { Button } from "./Button";
 
-export default function Recieve({ setWalletTab, address }: { 
-    setWalletTab: (value: boolean) => void; 
+export default function Recieve({ setSelectedTabs, address }: { 
+    setSelectedTabs: (value: string) => void; 
     address: string; 
 }) { 
     return (
@@ -9,7 +9,7 @@ export default function Recieve({ setWalletTab, address }: {
             <div className="border border-slate-700 w-[480px] h-[480px] rounded-lg shadow-md p-3 bg-[#0c111f]  bg-opacity-80 text-white">
                 <div className="flex justify-end">
                     <button 
-                        onClick={() => setWalletTab(false)}
+                        onClick={() => setSelectedTabs("Tokens")}
                         className="text-white font-bold text-lg"
                     >
                         X
