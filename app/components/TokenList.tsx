@@ -4,7 +4,7 @@ import { TokenwithBalance } from "../api/Hooks/useTokens"
 export function TokenList({tokens}: {
     tokens: TokenwithBalance[]
 }) {
-    return <div className="p-2">
+    return <div className="p-2 text-white">
         {tokens.map(t => <TokenRow key={t.name} token={t} />)}
     </div>
 }
@@ -12,7 +12,7 @@ export function TokenList({tokens}: {
 function TokenRow({token}: {
     token: TokenwithBalance
 }) {
-    return <div className="flex justify-between items-center border p-2 rounded-lg my-2 ">
+    return <div className="flex justify-between items-center px-2 py-3 rounded-lg my-2 hover:bg-[#141415] ">
         <div className="flex">
             <div>
                 <img src={token.image} className="h-10 w-10 rounded-full mr-2" />

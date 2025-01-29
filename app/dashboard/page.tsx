@@ -43,7 +43,7 @@ export default async function Dashboard(){
         )
     }
  return(
-    <div className="bg-gradient-to-r from-[#090808] via-[#0c111f] to-[#0d111f] w-full h-screen">
+    <div className="bg-gradient-to-r from-[#080d18] via-[#0c111f] to-[#0d111f] w-full h-screen">
         <Asset publicKey ={userWallet.userWallet?.publicKey??""}/>
     </div>
  )

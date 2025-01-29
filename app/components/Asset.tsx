@@ -52,7 +52,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
 
   return (
     <div className="flex flex-col items-center pt-20">
-        <div className="w-[95%] max-w-[650px] rounded-lg bg-white shadow-lg p-8">
+        <div className="w-[95%] max-w-[650px] rounded-t-lg bg-[#0f0e14]  text-white shadow-lg p-8">
             <div className="flex flex-col sm:flex-row items-center">
                 <div>
                     <img
@@ -61,7 +61,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
                     alt="Profile"
                     />
                 </div>
-                <div className="text-3xl font-semibold text-blue-950 text-center sm:text-left">
+                <div className="text-3xl font-semibold text-center sm:text-left">
                      Welcome Back, {session.data?.user?.name}
                 </div>
             </div>
@@ -87,7 +87,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ))}
             </div>
         </div>
-        <div className="bg-slate-100 w-[95%] max-w-[650px] rounded-lg shadow-lg p-8 mt-4">
+            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg p-4 bg-[#0f0e14]">
             {selectedTabs === "Tokens" ? (
             <div className="p-4">
                 <TokenList tokens={tokenBalances?.tokens || []} />

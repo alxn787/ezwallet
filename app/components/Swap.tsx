@@ -34,8 +34,8 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
     },[baseAmount,baseAsset,quoteAsset])
 
     return (
-        <div className="text-2xl font-bold p-4">
-            <div>
+        <div className="text-2xl text-white font-bold p-4">
+            <div className="pl-2">
                 Swap Tokens
             </div>
 
@@ -43,20 +43,28 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
                 inputDisabled={false}
                 amount={baseAmount}
                 onAmountChange={(value: string) => setBaseAmount(value)}
-                title="You Pay" 
+                title="Send" 
                 selectedToken={baseAsset} 
                 onselect={(asset) => setBaseAsset(asset)} 
                 subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance).toFixed(3).toString()} 
                 topBorderEnabled={true}  
                 bottomBorderEnabled={false} 
             />
+            <div className="relative flex items-center justify-center ">
+                <div className="w-full  "></div>
+                    <div className="absolute bg-black p-2 rounded-full w-[42px] h-[42px] shadow-md flex justify-center items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#212127" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path fill="#212127" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                </div>
+            </div>
 
             <SwapInputRow 
                 inputLoading={qouteLoading}
                 inputDisabled={true}
                 amount={quoteAmount} 
                 onAmountChange={(value: string) => setQuoteAmount(value)}
-                title="You Receive" 
+                title="Recieve" 
                 selectedToken={quoteAsset} 
                 onselect={(asset) => setQuoteAsset(asset)} 
                 subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance).toFixed(3)} 
@@ -98,30 +106,31 @@ function SwapInputRow({
     inputLoading?: boolean;
 }) {
     return (
-        <div className={`flex justify-between items-center border text-sm ${topBorderEnabled ? "rounded-t-xl" : ""} ${bottomBorderEnabled ? "rounded-b-xl" : ""}`}>
-            <div className='text-sm p-6'>
+        <div className={`flex justify-between items-center bg-[#212127] text-sm rounded-lg m-1`}>
+            
+            <div className="p-5 font-light">
                 <div className="m-1">
                     {title}
                 </div>
-                <AssetSelector onselect={onselect} selectedToken={selectedToken} />
-                <div className="text-sm m-1 font-light text-slate-500">
-                    Current Balance: {subtitle} {selectedToken.name}
-                </div>
-            </div>
-            <div className="p-5 font-light">
                 <input
                     disabled={inputDisabled}
                     onChange={(e) => onAmountChange(e.target.value)}
                     value={inputLoading ? "" : amount} 
                     placeholder={inputLoading ? "..." : "0"} 
                     type="text"
-                    className="py-5 bg-slate-100 w-56 h-24 text-end text-5xl focus:outline-none"
+                    className="py-5 bg-[#212127] w-56 h-14  text-3xl focus:outline-none"
                 />
                 {inputLoading && (
                     <div className="absolute right-10 top-6 animate-spin">
                         <div className="border-4 border-t-transparent border-blue-500 w-6 h-6 rounded-full"></div>
                     </div>
                 )}
+            </div>
+            <div className='text-sm p-6 '>
+                <AssetSelector onselect={onselect} selectedToken={selectedToken} />
+                <div className="text-sm m-1 font-light text-slate-500">
+                    Current Balance: {subtitle} {selectedToken.name}
+                </div>
             </div>
         </div>
     )
@@ -130,7 +139,7 @@ function SwapInputRow({
 
 function AssetSelector({ selectedToken, onselect }: { selectedToken: TokenDetails; onselect: (asset: TokenDetails) => void; }) {
     return (
-        <div className="">
+        <div className=" flex justify-end">
             <select
                 onChange={(e) => {
                     const selectedToken = SUPPORTED_TOKENS.find((x) => x.name === e.target.value)
@@ -139,7 +148,7 @@ function AssetSelector({ selectedToken, onselect }: { selectedToken: TokenDetail
                     }
                 }}
                 id="countries"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5 "
             >
                 <option value={selectedToken.name}>{selectedToken.name}</option>
                 {SUPPORTED_TOKENS.filter(x => x.name !== selectedToken.name).map(token => <option key={token.name} value={token.name}>{token.name}</option>)}
