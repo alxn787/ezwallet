@@ -30,13 +30,13 @@ export default async function Dashboard(){
     const userWallet = await getUserWallet();
     if(!userWallet){
         return(
-            <div>
+            <div className="bg-blue-900">
                 No solana wallet found
             </div>
         )
     }
  return(
-    <div>
+    <div className="bg-gradient-to-r from-[#090808] via-[#0c111f] to-[#0d111f] w-full h-screen">
         <Asset publicKey ={userWallet.userWallet?.publicKey?? "8fCXUDCkvhEQkYNyMbsWgYsaqikorojdv2hgfezfvbdD"}/>
     </div>
  )

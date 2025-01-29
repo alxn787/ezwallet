@@ -46,7 +46,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
   }
 
   return (
-    <div className="flex flex-col items-center mt-20">
+    <div className="flex flex-col items-center pt-20">
       <div className="w-[95%] max-w-[760px] rounded-lg bg-white shadow-lg p-8">
         <div className="flex flex-col sm:flex-row items-center">
           <div>
