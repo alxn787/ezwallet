@@ -40,10 +40,12 @@ export default function Asset({ publicKey }: { publicKey: string }) {
       </div>
     );
   }
-
-  if (!session.data?.user) {
-    router.push("/");
-  }
+  useEffect(()=>{
+    if (!session.data?.user) {
+        router.push("/");
+      }
+  },[session.data])
+  
 
   return (
     <div className="flex flex-col items-center pt-20">
@@ -52,7 +54,9 @@ export default function Asset({ publicKey }: { publicKey: string }) {
           <div>
             <img
               className="rounded-full mb-4 sm:mb-0 sm:me-4 h-[68px] w-[68px]"
-              src={session.data?.user?.image ?? ""}
+
+              src={session.data?.user?.image || undefined}
+              alt="Profile"
             />
           </div>
           <div className="text-3xl font-semibold text-blue-950 text-center sm:text-left">

@@ -6,15 +6,22 @@ import Asset from "../components/Asset";
 
 async function getUserWallet() {
     const session = await getServerSession(authConfig);
+    const user = await db.user.findFirst({
+        where:{ 
+        username:session?.user?.email
+    }
+    })
+    console.log(`uid is ${user?.username}`)
 
     const userWallet = await db.solwallet.findFirst({
         where: {
-            UserId: session?.user?.uid 
+            UserId: user?.id
         },
         select: {
             publicKey: true
         }
     })
+    console.log(userWallet?.publicKey)
 
     if (!userWallet) {
         return {
@@ -37,7 +44,7 @@ export default async function Dashboard(){
     }
  return(
     <div className="bg-gradient-to-r from-[#090808] via-[#0c111f] to-[#0d111f] w-full h-screen">
-        <Asset publicKey ={userWallet.userWallet?.publicKey?? "8fCXUDCkvhEQkYNyMbsWgYsaqikorojdv2hgfezfvbdD"}/>
+        <Asset publicKey ={userWallet.userWallet?.publicKey??""}/>
     </div>
  )
 }
