@@ -40,11 +40,15 @@ export default function Asset({ publicKey }: { publicKey: string }) {
       </div>
     );
   }
-  useEffect(()=>{
-    if (!session.data?.user) {
-        router.push("/");
+  useEffect(() => {
+    const redirectIfNeeded = async () => {
+      if (!session.data?.user) {
+        await router.push("/");
       }
-  },[session.data])
+    };
+    redirectIfNeeded();
+  }, [session.data, router]);
+  
   
 
   return (
