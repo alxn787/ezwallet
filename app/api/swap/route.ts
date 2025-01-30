@@ -65,6 +65,7 @@ export async function POST(req:NextRequest){
         transaction.sign([privateKey]);
         const latestBlockHash = await connection.getLatestBlockhash();
 
+
         const rawTransaction = transaction.serialize()
         const txid = await connection.sendRawTransaction(rawTransaction, {
             skipPreflight: true,

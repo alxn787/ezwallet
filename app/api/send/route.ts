@@ -42,7 +42,7 @@ export async function POST(req:NextRequest){
 
     console.log(data)
     const keypair = getPrivateKeyFromDb(solwallet.privateKey)
-    const connection = new Connection("https://api.mainnet-beta.solana.com")
+    const connection = new Connection("https://api.devnet.solana.com")
     const transacton = new Transaction().add(
         SystemProgram.transfer({
             fromPubkey:new PublicKey(data.address),

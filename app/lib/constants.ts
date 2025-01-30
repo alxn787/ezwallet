@@ -5,7 +5,7 @@ const prices: {[key:string]:{
     price: string;
 }} = {};
 
-export const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/wMhI7MINrKttxLL6U8FkFB_wsMDk7sbl")
+export const connection = new Connection("https://api.devnet.solana.com")
 
 
 export async function getSupportedTokens() {
