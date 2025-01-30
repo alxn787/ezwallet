@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens";
+import { SUPPORTED_TOKENS} from "../lib/tokens";
 import { AssetSelector } from "./Swap";
 import { Button } from "./Button";
 import axios from "axios";
-import { getUserWallet } from "../dashboard/page";
 
 
 export function SendToken({address}:{address:string}){
 
     const [selectedToken,setselectedToken] = useState(SUPPORTED_TOKENS[0])
     const [recieverAddress, setRecieverAddress] = useState("")
-    const [senderAddress,setSenderAddress] = useState("")
 
 
 

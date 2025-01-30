@@ -1,5 +1,4 @@
-import { getUserWallet } from "@/app/dashboard/page";
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmRawTransaction, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey,sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/app/db"
@@ -8,8 +7,8 @@ import { authConfig } from "@/app/lib/auth";
 export async function POST(req:NextRequest){
 
     const data : {
-        recieverAddress:any;
-        address:any;
+        recieverAddress:string;
+        address:string;
     } = await req.json()
 
     const session = await getServerSession(authConfig);
