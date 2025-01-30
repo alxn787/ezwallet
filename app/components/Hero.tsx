@@ -5,6 +5,8 @@ import { Button } from "./Button"
 import { useRouter } from "next/navigation"
 import Pricing from "./Pricing";
 import BetaAccess from "./Beta";
+import { AutoPlayVideo } from "./Autoplay";
+import Footer from "./Footer";
 
 
 export const Hero = () => {
@@ -60,16 +62,14 @@ export const Hero = () => {
                 </div>
 
                 <div className="my-7 border border-slate-700 rounded-md p-2 bg-slate-900">
-                    <video className="w-[760px]"controls>
-                        <source src="/demo.mp4" type="video/mp4" />
-                        your browser does not support
-                    </video>
+                    <AutoPlayVideo/>
                 </div>
             </div>
-            <div className="bg-black border border-x-black border-b-black border-t-blue-950">
+            <div className="bg-black border border-x-black border-b-black border-t-blue-950 pb-14">
                 <BetaAccess/>
                 <Pricing/>
             </div>
+            <Footer/>
         </div>    
     );
 };

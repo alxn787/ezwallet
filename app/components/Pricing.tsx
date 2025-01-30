@@ -73,11 +73,10 @@ const Pricing = () => {
         <div className="container mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
                 {plans.map((plan, index) => (
-                <div className={` flex flex-col justify-between p-6 border rounded-xl ${
+                <div key={index} className={` flex flex-col justify-between p-6 border rounded-xl ${
                     plan.highlight ? "border-blue-500" : "border-gray-800 "
                 }`}>
                     <div
-                        key={index}
                         >
                         {plan.highlight && (
                             <div className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full w-fit">
