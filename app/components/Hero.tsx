@@ -2,7 +2,7 @@
 "use client"
 import { signIn, useSession } from "next-auth/react"
 import { Button } from "./Button"
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
 
 
 export const Hero = () => {
@@ -16,7 +16,7 @@ export const Hero = () => {
                     <span className="text-[rgb(74,118,230)]"> Simplified</span>
                 </h1>
                 <div className="text-xl text-gray-300 max-w-2xl mx-auto">
-                    Swap tokens and manage balances with ease.
+                    Swap, Send and Manage Tokens with ease.
                 </div>
             </div>
             {session.data?.user ? (
@@ -57,8 +57,8 @@ export const Hero = () => {
             </div>
 
             <div className="my-7 border border-slate-700 rounded-md p-2 bg-slate-900">
-                <video className="w-[1024px]"controls>
-                    <source src="https://docs.material-tailwind.com/demo.mp4" type="video/mp4" />
+                <video className="w-[760px]"controls>
+                    <source src="/demo.mp4" type="video/mp4" />
                     your browser does not support
                 </video>
             </div>
