@@ -47,12 +47,10 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
                 selectedToken={baseAsset} 
                 onselect={(asset) => setBaseAsset(asset)} 
                 subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance).toFixed(3).toString()} 
-                topBorderEnabled={true}  
-                bottomBorderEnabled={false} 
             />
             <div className="relative flex items-center justify-center ">
                 <div className="w-full  "></div>
-                    <div className="absolute bg-black p-2 rounded-full w-[42px] h-[42px] shadow-md flex justify-center items-center">
+                    <div className="absolute bg-black p-2 rounded-full w-[36px] h-[36px] shadow-md flex justify-center items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="#212127" viewBox="0 0 24 24"  stroke="currentColor">
                     <path  d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                     </svg>
@@ -68,8 +66,6 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
                 selectedToken={quoteAsset} 
                 onselect={(asset) => setQuoteAsset(asset)} 
                 subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance).toFixed(3)} 
-                topBorderEnabled={false} 
-                bottomBorderEnabled={true} 
             />
             
             <div className="flex justify-between mt-5">
@@ -89,8 +85,6 @@ function SwapInputRow({
     selectedToken,
     title,
     subtitle,
-    topBorderEnabled,
-    bottomBorderEnabled,
     inputDisabled,
     inputLoading
 }: {
@@ -98,8 +92,6 @@ function SwapInputRow({
     onselect: (asset: TokenDetails) => void;
     title: string;
     subtitle?: string;
-    topBorderEnabled: boolean;
-    bottomBorderEnabled: boolean;
     amount?: string;
     onAmountChange: (value: string) => void;
     inputDisabled: boolean;
@@ -137,7 +129,7 @@ function SwapInputRow({
 }
 
 
-function AssetSelector({ selectedToken, onselect }: { selectedToken: TokenDetails; onselect: (asset: TokenDetails) => void; }) {
+export function AssetSelector({ selectedToken, onselect }: { selectedToken: TokenDetails; onselect: (asset: TokenDetails) => void; }) {
     return (
         <div className=" flex justify-end">
             <select

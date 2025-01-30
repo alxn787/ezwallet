@@ -7,6 +7,7 @@ import { useTokens } from "../api/Hooks/useTokens";
 import { TokenList } from "./TokenList";
 import { Swap } from "./Swap";
 import Recieve from "./Recieve";
+import { SendToken } from "./Send";
 
 
 
@@ -87,7 +88,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ))}
             </div>
         </div>
-            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg p-4 bg-[#090808] border-x border-b border-slate-800">
+            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg px-4 pt-4 bg-[#090808] border-x border-b border-slate-800">
             {selectedTabs === "Tokens" ? (
             <div className="p-4">
                 <TokenList tokens={tokenBalances?.tokens || []} />
@@ -99,6 +100,11 @@ export default function Asset({ publicKey }: { publicKey: string }) {
                 tokenBalances={tokenBalances}
                 setSelectedTabs={setSelectedTabs}
                 />
+            </div>
+            ) : null}
+             {selectedTabs === "Send" ? (
+            <div className="my-3">
+               <SendToken/>
             </div>
             ) : null}
         </div>

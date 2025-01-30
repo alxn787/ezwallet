@@ -63,7 +63,6 @@ export const authConfig = {
 
   callbacks: {
     async session({ session, token }:any) {
-      console.log("Session callback:", { session, token });
       if (session.user && token.uid) {
         session.user.uid = token.uid; 
       }
@@ -71,7 +70,6 @@ export const authConfig = {
     },
 
     async jwt({ token, account, user }:any) {
-      console.log("JWT callback:", { token, account, user });
       if (account?.provider === "google") {
 
         const dbUser = await db.user.findFirst({
