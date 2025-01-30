@@ -2,15 +2,22 @@ import { useState } from "react";
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens";
 import { AssetSelector } from "./Swap";
 import { Button } from "./Button";
+import axios from "axios";
+import { getUserWallet } from "../dashboard/page";
 
 
-export function SendToken(){
+export function SendToken({address}:{address:string}){
 
     const [selectedToken,setselectedToken] = useState(SUPPORTED_TOKENS[0])
     const [recieverAddress, setRecieverAddress] = useState("")
+    const [senderAddress,setSenderAddress] = useState("")
 
-    function SendTransaction(){
-        alert(selectedToken.name)
+
+
+
+    async function SendTransaction(){
+        console.log(recieverAddress,address)
+        axios.post("/api/send",{recieverAddress, address})
     }
    
     return (
@@ -28,7 +35,7 @@ export function SendToken(){
             <div className="flex justify-center my-5">
             <Button 
             insidevalue = {`Send ${selectedToken.name}`} 
-            onClick={()=>{SendTransaction}}/>
+            onClick={()=>{SendTransaction()}}/>
             </div>
         </div>
     )

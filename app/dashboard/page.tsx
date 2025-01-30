@@ -4,7 +4,7 @@ import db from "@/app/db";
 import { authConfig } from "../lib/auth";
 import Asset from "../components/Asset";
 
-async function getUserWallet() {
+export async function getUserWallet() {
     const session = await getServerSession(authConfig);
     const user = await db.user.findFirst({
         where:{ 

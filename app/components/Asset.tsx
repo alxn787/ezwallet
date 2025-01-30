@@ -104,7 +104,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ) : null}
              {selectedTabs === "Send" ? (
             <div className="my-3">
-               <SendToken/>
+               <SendToken address = {publicKey}/>
             </div>
             ) : null}
         </div>
