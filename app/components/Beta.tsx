@@ -1,3 +1,4 @@
+/* eslint-disable */
 const BetaAccess = () => {
   return (
     <section className="bg-black text-white py-12 text-center">

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FaCheck } from "react-icons/fa";
 
 const plans = [

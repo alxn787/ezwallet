@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { NextRequest, NextResponse } from "next/server";
 import { getAccount, getAssociatedTokenAddress} from "@solana/spl-token";
 import { connection, getSupportedTokens } from "@/app/lib/constants";
