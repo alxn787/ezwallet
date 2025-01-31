@@ -9,6 +9,7 @@ export async function POST(req:NextRequest){
     const data : {
         recieverAddress:string;
         address:string;
+        Amount:string;
     } = await req.json()
 
     const session = await getServerSession(authConfig);
@@ -47,7 +48,7 @@ export async function POST(req:NextRequest){
         SystemProgram.transfer({
             fromPubkey:new PublicKey(data.address),
             toPubkey: new PublicKey(data.recieverAddress),
-            lamports: 0.1 * LAMPORTS_PER_SOL   
+            lamports: Number(data.Amount) * LAMPORTS_PER_SOL   
         })
     )
     const signature = await sendAndConfirmTransaction(connection,transacton,[keypair])
