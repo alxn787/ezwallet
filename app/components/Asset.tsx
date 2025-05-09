@@ -90,7 +90,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
             ))}
             </div>
             </div>
-                <div className=" w-[95%] max-w-[650px] max-h-[400px] overflow-y-scroll rounded-b-lg shadow-lg px-4 pt-4 bg-[#090808] border-x border-b border-slate-800">
+                <div className=" w-[95%] max-w-[650px] max-h-[300px] overflow-y-scroll rounded-b-lg shadow-lg px-4 pt-4 bg-[#090808] border-x border-b border-slate-800">
                 {selectedTabs === "Tokens" ? (
                 <div className="p-4">
                     <TokenList tokens={tokenBalances?.tokens || []} />
