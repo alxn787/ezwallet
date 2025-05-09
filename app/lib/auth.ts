@@ -27,17 +27,6 @@ export const authConfig = {
       },
       async authorize(credentials, req) {
         console.log("authorize called with credentials:", credentials);
-
-        // Example of hardcoded user validation for testing
-        // if (credentials?.username === "alxn787" && credentials?.password === "password") {
-        //   return {
-        //     id: "1",
-        //     username: "alxn787",
-        //     email: "alxn787@gmail.com",
-        //   };
-        // }
-
-        // Check your database for valid user
         const user = await db.user.findFirst({
           where: {
             username: "alenalexm50@gmail.com",

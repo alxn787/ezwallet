@@ -5,33 +5,56 @@ import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens"
 import { TokenwithBalance } from "../api/Hooks/useTokens"
 import { Button } from "./Button"
 import axios from "axios"
+import { MdDoubleArrow } from "react-icons/md"
+import { ArrowUDownRight } from "@phosphor-icons/react"
+import { LuArrowUpDown } from "react-icons/lu"
 
-export function Swap({ tokenBalances,setSelectedTabs}: {
+export function Swap({ tokenBalances, setSelectedTabs }: {
     tokenBalances: {
         TotalBalance: number;
         tokens: TokenwithBalance[];
     } | null;
-    setSelectedTabs:(x:string)=>void
+    setSelectedTabs: (x: string) => void
 }) {
     const [baseAsset, setBaseAsset] = useState(SUPPORTED_TOKENS[0])
     const [quoteAsset, setQuoteAsset] = useState(SUPPORTED_TOKENS[1])
     const [baseAmount, setBaseAmount] = useState<string>("")
     const [quoteAmount, setQuoteAmount] = useState<string>("")
-    const [qouteLoading,setQuoteLoading] = useState<boolean>(false)
-    const [quoteResponse,setquoteResponse] = useState(null)
+    const [qouteLoading, setQuoteLoading] = useState<boolean>(false)
+    const [quoteResponse, setquoteResponse] = useState(null)
 
-    useEffect(()=>{
-        if(!baseAmount){
+    useEffect(() => {
+        if (!baseAmount || baseAmount === "0") {
+            setQuoteAmount(""); 
+            setquoteResponse(null); 
             return;
         }
         setQuoteLoading(true)
-        axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${Number(baseAmount) * (10**baseAsset.decimals)}&slippageBps=50`)
-            .then(res=>{setQuoteAmount((Number(res.data.outAmount) / Number(10 ** quoteAsset.decimals)).toString()),
-                setQuoteLoading(false);
-                setquoteResponse(res.data); 
+        axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${Number(baseAmount) * (10 ** baseAsset.decimals)}&slippageBps=50`)
+            .then(res => {
+                setQuoteAmount((Number(res.data.outAmount) / Number(10 ** quoteAsset.decimals)).toString()),
+                    setQuoteLoading(false);
+                setquoteResponse(res.data);
             })
+            .catch(err => {
+                 console.error("Error fetching quote:", err);
+                 setQuoteAmount("Error");
+                 setQuoteLoading(false);
+                 setquoteResponse(null);
+             });
 
-    },[baseAmount,baseAsset,quoteAsset])
+    }, [baseAmount, baseAsset, quoteAsset])
+
+    const handleSwapAssets = () => {
+        const currentBase = baseAsset;
+        const currentQuote = quoteAsset;
+        const currentBaseAmount = baseAmount;
+        const currentQuoteAmount = quoteAmount;
+        setBaseAsset(currentQuote);
+        setQuoteAsset(currentBase);
+        setBaseAmount(baseAmount);
+    };
+
 
     return (
         <div className="text-2xl text-white font-bold p-4">
@@ -39,40 +62,42 @@ export function Swap({ tokenBalances,setSelectedTabs}: {
                 Swap Tokens
             </div>
 
-            <SwapInputRow 
+            <SwapInputRow
                 inputDisabled={false}
                 amount={baseAmount}
                 onAmountChange={(value: string) => setBaseAmount(value)}
-                title="Send" 
-                selectedToken={baseAsset} 
-                onselect={(asset) => setBaseAsset(asset)} 
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance).toFixed(3).toString()} 
+                title="Send"
+                selectedToken={baseAsset}
+                onselect={(asset) => setBaseAsset(asset)}
+                subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance || 0).toFixed(3).toString()}
             />
             <div className="relative flex items-center justify-center ">
                 <div className="w-full  "></div>
-                    <div className="absolute bg-black p-2 rounded-full w-[36px] h-[36px] shadow-md flex justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#212127" viewBox="0 0 24 24"  stroke="currentColor">
-                    <path  d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-                    </svg>
+                <div className="absolute bg-black p-2 rounded-full w-[36px] h-[36px] shadow-md flex justify-center items-center cursor-pointer"
+                    onClick={handleSwapAssets} 
+                >
+                   <LuArrowUpDown className="text-white/70"/>
+                    
                 </div>
             </div>
 
-            <SwapInputRow 
+            <SwapInputRow
                 inputLoading={qouteLoading}
-                inputDisabled={true}
-                amount={quoteAmount} 
+                inputDisabled={true} 
+                amount={quoteAmount}
                 onAmountChange={(value: string) => setQuoteAmount(value)}
-                title="Recieve" 
-                selectedToken={quoteAsset} 
-                onselect={(asset) => setQuoteAsset(asset)} 
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance).toFixed(3)} 
+                title="Receive"
+                selectedToken={quoteAsset}
+                onselect={(asset) => setQuoteAsset(asset)}
+                subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance || 0).toFixed(3)}
             />
-            
+
             <div className="flex justify-between mt-5">
                 <Button insidevalue="Cancel" onClick={() => setSelectedTabs("Tokens")} />
-                <Button 
-                insidevalue="Confirm and Swap" 
-                onClick={() => axios.post('/api/swap',{quoteResponse})} />
+                <Button
+                    insidevalue="Confirm and Swap"
+                    onClick={() => axios.post('/api/swap', { quoteResponse })} 
+                />
             </div>
         </div>
     )
@@ -99,21 +124,21 @@ function SwapInputRow({
 }) {
     return (
         <div className={`flex justify-between items-center bg-[#212127] text-sm rounded-lg m-1`}>
-            
-            <div className="p-5 font-light">
+
+            <div className="p-5 font-light relative"> 
                 <div className="m-1">
                     {title}
                 </div>
                 <input
                     disabled={inputDisabled}
                     onChange={(e) => onAmountChange(e.target.value)}
-                    value={inputLoading ? "" : amount} 
-                    placeholder={inputLoading ? "..." : "0"} 
+                    value={inputLoading ? "" : amount}
+                    placeholder={inputLoading ? "..." : "0"}
                     type="text"
                     className="py-5 bg-[#212127] w-56 h-14  text-3xl focus:outline-none"
                 />
                 {inputLoading && (
-                    <div className="absolute right-10 top-6 animate-spin">
+                    <div className="absolute right-10 top-1/2 transform -translate-y-1/2 animate-spin"> {/* Adjusted spinner position */}
                         <div className="border-4 border-t-transparent border-blue-500 w-6 h-6 rounded-full"></div>
                     </div>
                 )}
@@ -148,4 +173,3 @@ export function AssetSelector({ selectedToken, onselect }: { selectedToken: Toke
         </div>
     )
 }
-

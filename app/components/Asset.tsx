@@ -8,6 +8,7 @@ import { TokenList } from "./TokenList";
 import { Swap } from "./Swap";
 import Recieve from "./Recieve";
 import { SendToken } from "./Send";
+import Insights from "./Insights";
 
 
 
@@ -20,13 +21,14 @@ export default function Asset({ publicKey }: { publicKey: string }) {
   const [selectedTabs, setSelectedTabs] = useState("Tokens");
  
 
-  type Tab = "Tokens" | "Recieve" | "Send" | "Swap";
+  type Tab = "Tokens" | "Recieve" | "Send" | "Swap" | "Insights";
 
   const Tabs: { id: Tab; name: string }[] = [
     { id: "Tokens", name: "Tokens" },
     { id: "Recieve", name: "Recieve" },
     { id: "Send", name: "Send" },
     { id: "Swap", name: "Swap" },
+    { id: "Insights", name: "Insights"}
   ];
 
   useEffect(() => {
@@ -87,28 +89,30 @@ export default function Asset({ publicKey }: { publicKey: string }) {
                 />
             ))}
             </div>
-        </div>
-            <div className=" w-[95%] max-w-[650px] rounded-b-lg shadow-lg px-4 pt-4 bg-[#090808] border-x border-b border-slate-800">
-            {selectedTabs === "Tokens" ? (
-            <div className="p-4">
-                <TokenList tokens={tokenBalances?.tokens || []} />
             </div>
-            ) : null}
-            {selectedTabs === "Swap" ? (
-            <div className="my-3">
-                <Swap
-                tokenBalances={tokenBalances}
-                setSelectedTabs={setSelectedTabs}
-                />
-            </div>
-            ) : null}
-             {selectedTabs === "Send" ? (
-            <div className="my-3">
-               <SendToken address = {publicKey}/>
-            </div>
-            ) : null}
-        </div>
-        {selectedTabs === "Recieve"? <Recieve setSelectedTabs = {setSelectedTabs} address = {publicKey}/> : null}
+                <div className=" w-[95%] max-w-[650px] max-h-[400px] overflow-y-scroll rounded-b-lg shadow-lg px-4 pt-4 bg-[#090808] border-x border-b border-slate-800">
+                {selectedTabs === "Tokens" ? (
+                <div className="p-4">
+                    <TokenList tokens={tokenBalances?.tokens || []} />
+                </div>
+                ) : null}
+                {selectedTabs === "Swap" ? (
+                <div className="my-3">
+                    <Swap
+                    tokenBalances={tokenBalances}
+                    setSelectedTabs={setSelectedTabs}
+                    />
+                </div>
+                ) : null}
+                {selectedTabs === "Send" ? (
+                <div className="my-3">
+                  <SendToken address = {publicKey}/>
+                </div>
+                ) : null}
+                {selectedTabs === "Recieve"? <Recieve setSelectedTabs = {setSelectedTabs} address = {publicKey}/> : null}
+                {selectedTabs === "Insights"? <Insights/> : null}
+              </div>
+
     </div>
   );
 }
