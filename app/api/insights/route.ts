@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
 export async function POST(req: NextRequest) {
-  const { message } = await req.json(); // Still parse the incoming request body
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   // --- Adjusted Prompt for String Output ---
@@ -31,25 +30,17 @@ export async function POST(req: NextRequest) {
           content: prompt, // Use the adjusted prompt
         },
       ],
-      // Removed response_format as we are asking for a plain string output
     });
 
-    // Get the content as a string
     const content = response.choices[0].message.content?.trim() || "";
 
     if (!content) {
          console.error("OpenAI returned empty content.");
-          // Even though we return string, use a consistent error structure if possible
          return new Response("Error: OpenAI returned empty content.", { status: 500 });
     }
 
     console.log("Returning plain string from API:", content);
 
-    // **Modification: Return content as a plain string**
-    // We can return it with Content-Type text/plain,
-    // or omit headers for default which might be text/plain or application/json
-    // depending on framework, but client expects text.
-    // Explicitly setting text/plain is clearer.
     return new Response(content, {
       status: 200,
       headers: { "Content-Type": "text/plain" },
