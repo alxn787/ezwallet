@@ -7,7 +7,7 @@ export const Button = ({ insidevalue, onClick }: {
     <button
       type="button"
       onClick={onClick} 
-      className=" border border-[#2460e8] hover:bg-[#2460e8]/10 transition-colors focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+      className=" border border-white/50 hover:border-[#2460e8] hover:bg-[#2460e8]/10 transition-colors focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
     >
       {insidevalue}
     </button>

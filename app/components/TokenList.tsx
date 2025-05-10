@@ -4,7 +4,7 @@ import { TokenwithBalance } from "../api/Hooks/useTokens"
 export function TokenList({tokens}: {
     tokens: TokenwithBalance[]
 }) {
-    return <div className="p-2 text-white">
+    return <div className="p-2 text-white  ">
         {tokens.map(t => <TokenRow key={t.name} token={t} />)}
     </div>
 }
