@@ -5,8 +5,6 @@ import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens"
 import { TokenwithBalance } from "../api/Hooks/useTokens"
 import { Button } from "./Button"
 import axios from "axios"
-import { MdDoubleArrow } from "react-icons/md"
-import { ArrowUDownRight } from "@phosphor-icons/react"
 import { LuArrowUpDown } from "react-icons/lu"
 
 export function Swap({ tokenBalances, setSelectedTabs }: {

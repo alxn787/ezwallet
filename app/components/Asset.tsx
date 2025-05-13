@@ -16,6 +16,7 @@ export default function Asset({ publicKey }: { publicKey: string }) {
   const [copied, setCopied] = useState(false);
   const { tokenBalances } = useTokens(publicKey);
   const [selectedTabs, setSelectedTabs] = useState("Tokens");
+  console.log(tokenBalances);
 
   type Tab = "Tokens" | "Recieve" | "Send" | "Swap" | "Insights";
 
@@ -49,8 +50,6 @@ export default function Asset({ publicKey }: { publicKey: string }) {
   }
 
   return (
-    // Make the main container a flex column that fills at least the screen height
-    // pt-20 creates space at the top, we need to ensure the flex layout accounts for this.
     <div className="flex flex-col items-center max-h-screen h-[98%] pt-20">
       {/* Top section with user info and tabs */}
       <div className="w-[95%] max-w-[650px] rounded-t-lg bg-[#090808] text-white shadow-lg p-8 border-x border-t border-slate-800">
