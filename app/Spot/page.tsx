@@ -3,13 +3,14 @@ import { getServerSession } from "next-auth";
 import db from "@/app/db";
 import { authConfig } from "../lib/auth";
 import NewDashboardPage from "../components/newdashboard";
+import { useRouter } from "next/navigation";
 
 
 
 export default async function Dashboard(){
-
+    const session = await getServerSession(authConfig);
     async function getUserWallet() {
-        const session = await getServerSession(authConfig);
+        
         const user = await db.user.findFirst({
             where:{ 
             username:session?.user?.email

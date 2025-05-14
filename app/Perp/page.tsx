@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, memo } from "react";
 import Tradingview from "../components/Tradingview";
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 
 const MAINTENANCE_MARGIN_RATE = 0.0065; 
@@ -287,6 +289,11 @@ function TradingInterface({ onTokenSelect }) {
 
 
 export default function Perps() {
+    const session = useSession();
+        const router = useRouter();
+    if(!session.data?.user){
+        router.push("/")
+    }
     const [currentToken, setCurrentToken] = useState(SUPPORTED_TOKENS[0]?.symbol || '');
     //@ts-ignore
     const handleTokenSelect = (tokenSymbol) => {

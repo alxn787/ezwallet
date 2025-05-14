@@ -1,6 +1,8 @@
 "use client";
 /* eslint-disable */
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface TokenData {
@@ -22,6 +24,11 @@ export default function Pro() {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+      const session = useSession();
+      const router = useRouter();
+    if(!session?.data?.user){
+        router.push("/")
+    }
 
   const API_ENDPOINT = "https://datapi.jup.ag/v1/assets/search?query";
 

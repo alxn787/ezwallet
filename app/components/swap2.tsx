@@ -1,7 +1,7 @@
 /* eslint-disable */
 "use client"
 
-import { useEffect, useState, useId, useRef } from "react"
+import { useEffect, useState, useId, useRef, memo } from "react"
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens"
 import { TokenwithBalance } from "../api/Hooks/useTokens"
 import axios from "axios"
@@ -15,6 +15,81 @@ import React, { InputHTMLAttributes, DetailedHTMLProps } from 'react';
 type SwapFormValues = {
     baseAmount: string;
 };
+
+interface TradingViewSymbolOverviewWidgetProps {
+    symbol: string;
+    className?: string;
+}
+
+function TradingViewSymbolOverviewWidget({ symbol, className }: TradingViewSymbolOverviewWidgetProps) {
+  const container = useRef<HTMLDivElement>(null);
+
+  useEffect(
+    () => {
+      if (!container.current || !symbol) return;
+
+      container.current.innerHTML = '';
+
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+      script.type = "text/javascript";
+      script.async = true;
+      script.innerHTML = `
+        {
+          "symbols": [
+            [
+              "${symbol}"
+            ]
+          ],
+          "chartOnly": false,
+          "width": "100%",
+          "height": "100%",
+          "locale": "en",
+          "colorTheme": "dark",
+          "autosize": true,
+          "showVolume": false,
+          "showMA": false,
+          "hideDateRanges": false,
+          "hideMarketStatus": false,
+          "hideSymbolLogo": false,
+          "scalePosition": "right",
+          "scaleMode": "Normal",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+          "fontSize": "10",
+          "noTimeScale": false,
+          "valuesTracking": "1",
+          "changeMode": "price-and-percent",
+          "chartType": "area",
+          "maLineColor": "#2962FF",
+          "maLineWidth": 1,
+          "maLength": 9,
+          "headerFontSize": "medium",
+          "lineWidth": 2,
+          "lineType": 0,
+          "dateRanges": [
+            "1d|1",
+            "1m|30",
+            "3m|60",
+            "12m|1D",
+            "60m|1W",
+            "all|1M"
+          ]
+        }`;
+      container.current.appendChild(script);
+
+    },
+    [symbol]
+  );
+
+  return (
+        <div className={`tradingview-widget-container `} ref={container}>
+        </div>
+
+  );
+}
+
+const MemoizedTradingViewSymbolOverviewWidget = memo(TradingViewSymbolOverviewWidget);
+
 
 export function Swap2({ tokenBalances, type }: {
     tokenBalances: {
@@ -356,6 +431,25 @@ export function Swap2({ tokenBalances, type }: {
                      )}
                 </form>
             </div>
+
+            {type === 'Instant' && baseAsset && quoteAsset && (
+                 <div className="flex gap-4 mt-6 ">
+                    <MemoizedTradingViewSymbolOverviewWidget
+                       symbol={`SOLUSD`}
+                       className="flex-1"
+                    />
+
+                    {baseAsset.symbol !== quoteAsset.symbol && (
+                       <MemoizedTradingViewSymbolOverviewWidget
+                          symbol={`${quoteAsset.symbol}`}
+                          className="flex-1"
+                       />
+                    )}
+                 </div>
+            )}
+            {type === 'Instant' && (
+                <div></div>
+            )}
         </div>
     )
 }
@@ -390,7 +484,6 @@ function SwapInputRow({
      const displayValue = inputLoading ? "" : amountValue;
      const placeholderText = inputLoading ? "" : "0";
 
-     // Standard HTML input props
      const standardProps: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> = {
         id: inputId,
         disabled: inputDisabled || inputLoading,
@@ -399,14 +492,13 @@ function SwapInputRow({
         className: "bg-[#212127] w-full h-14 text-3xl focus:outline-none text-white",
      };
 
-     // Conditionally apply react-hook-form props or manual value/onChange
      const inputProps = inputRegisterProps ? {
          ...standardProps,
-         ...inputRegisterProps, // This overrides standard props like value and onChange
+         ...inputRegisterProps,
      } : {
          ...standardProps,
-         value: displayValue, // Manual value binding
-         onChange: onAmountValueChange ? (e: React.ChangeEvent<HTMLInputElement>) => onAmountValueChange(e.target.value) : undefined, // Manual onChange handler
+         value: displayValue,
+         onChange: onAmountValueChange ? (e: React.ChangeEvent<HTMLInputElement>) => onAmountValueChange(e.target.value) : undefined,
      };
 
     return (
@@ -417,7 +509,7 @@ function SwapInputRow({
                 </div>
                 <div className="relative w-full">
                     <input
-                        {...inputProps} 
+                        {...inputProps}
                     />
                      {inputLoading && (
                          <div className="absolute inset-0 bg-neutral-700/30 rounded-xl animate-pulse flex items-center justify-center">
