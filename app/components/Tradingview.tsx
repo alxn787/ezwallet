@@ -24,15 +24,18 @@ function TradingViewWidget({ symbol } : { symbol: string }) {
           "support_host": "https://www.tradingview.com"
         }`;
       if (!container.current) return;
-
+      //@ts-ignore
       while (container.current.firstChild) {
+        //@ts-ignore
         container.current.removeChild(container.current.firstChild);
       }
-
+      //@ts-ignore
       container.current.appendChild(script);
 
       return () => {
+        //@ts-ignore
         if (container.current && container.current.contains(script)) {
+          //@ts-ignore
           container.current.removeChild(script);
         }
       };
