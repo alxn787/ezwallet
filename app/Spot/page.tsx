@@ -2,8 +2,6 @@ import { getServerSession } from "next-auth";
 
 import db from "@/app/db";
 import { authConfig } from "../lib/auth";
-import Asset from "../components/Asset";
-import { Swap2 } from "../components/swap2";
 import NewDashboardPage from "../components/newdashboard";
 
 
