@@ -17,7 +17,6 @@ export function TokenSelectionModal({ isOpen, onClose, onSelectToken }: TokenSel
     }
 
     return (
-        // Overlay (Blurred background and darker)
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
              style={{ backdropFilter: 'blur(8px)', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} // Apply blur and dark overlay
         >
@@ -39,8 +38,6 @@ export function TokenSelectionModal({ isOpen, onClose, onSelectToken }: TokenSel
                             className="flex items-center p-3 rounded-md hover:bg-neutral-700 cursor-pointer transition-colors"
                             onClick={() => onSelectToken(token)}
                         >
-                            {/* Assuming you have token icons */}
-                            {/* <img src={token.iconUrl} alt={token.symbol} className="w-6 h-6 mr-3" /> */}
                             <div className="w-6 h-6 mr-3 bg-neutral-600 rounded-full flex items-center justify-center text-xs">
                                 {token.image[0]} {/* Placeholder initial */}
                             </div>
@@ -53,9 +50,9 @@ export function TokenSelectionModal({ isOpen, onClose, onSelectToken }: TokenSel
                 </div>
 
                 {/* Optional: Search Input */}
-                 {/* <div className="p-4 border-t border-neutral-700">
+                 <div className="p-4 border-t border-neutral-700">
                      <input type="text" placeholder="Search tokens..." className="w-full p-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"/>
-                 </div> */}
+                 </div>
             </div>
         </div>
     );
