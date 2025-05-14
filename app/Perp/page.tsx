@@ -113,7 +113,6 @@ function TradingInterface({ onTokenSelect }) {
         }
     }, [selectedTokenSymbol, getTokenPrice]);
 
-    // Effect to set Entry Price once current price is loaded
     useEffect(() => {
         if (currentPrice !== null) {
             setEntryPrice(currentPrice);
@@ -125,7 +124,7 @@ function TradingInterface({ onTokenSelect }) {
     useEffect(() => {
         if (entryPrice !== null && leverage >= 1.1) { 
             let calculatedLiqPrice = null;
-            const imr = 1 / leverage; // Initial Margin Rate
+            const imr = 1 / leverage; 
 
             if (imr > MAINTENANCE_MARGIN_RATE) {
                 if (tradeSide === 'buy') { 
@@ -145,12 +144,12 @@ function TradingInterface({ onTokenSelect }) {
     }, [entryPrice, leverage, tradeSide]); 
 
 
-    // Helper to format prices
+
     //@ts-ignore
     const formatPrice = useCallback((price) => {
         if (price === null) return '-';
         const decimals = selectedTokenDetails?.decimals ?? 2;
-        return `$ ${price.toFixed(decimals > 8 ? 8 : decimals)}`; // Cap decimals for display if very high
+        return `$ ${price.toFixed(decimals > 8 ? 8 : decimals)}`;
     }, [selectedTokenDetails]);
 
 
@@ -302,9 +301,9 @@ export default function Perps() {
 
     return (
         <div className="w-screen h-screen flex flex-col">
-            <div className="h-16 "></div> {/* Placeholder for a header/nav */}
+            <div className="h-16 "></div> 
             <div className="flex flex-1 ">
-                <div className=" w-2/3 h-full rounded-xlx"> {/* rounded-xlx seems like a typo, maybe rounded-xl? */}
+                <div className=" w-2/3 h-full rounded-xlx"> 
                     <Tradingview symbol={currentToken} />
                 </div>
 

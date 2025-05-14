@@ -432,7 +432,7 @@ export function Swap2({ tokenBalances, type }: {
                 </form>
             </div>
 
-            {type === 'Instant' && baseAsset && quoteAsset && (
+            {/* {type === 'Instant' && baseAsset && quoteAsset && (
                  <div className="flex gap-4 mt-6 ">
                     <MemoizedTradingViewSymbolOverviewWidget
                        symbol={`SOLUSD`}
@@ -446,10 +446,8 @@ export function Swap2({ tokenBalances, type }: {
                        />
                     )}
                  </div>
-            )}
-            {type === 'Instant' && (
-                <div></div>
-            )}
+            )} */}
+            
         </div>
     )
 }
