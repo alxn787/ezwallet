@@ -28,7 +28,7 @@ export const Hero = () => {
                     <div className=" text-white py-2 px-6 rounded shadow-lg">
                         <Button
                             insidevalue="Go to Dashboard"
-                            onClick={() => router.push("/Spot")}                    />
+                            onClick={() => router.push("/dashboard")}                    />
                     </div>
                 ) : (
                     <div className="mt-8 text-white py-2 px-6 rounded shadow-lg">

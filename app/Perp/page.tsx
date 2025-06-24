@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { useEffect, useState, useCallback, memo } from "react";
 import Tradingview from "../components/Tradingview";
-import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens";
+import { SUPPORTED_TOKENS} from "../lib/tokens";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -37,13 +37,11 @@ function TradingInterface({ onTokenSelect }) {
         setInputAmount('');
         setEntryPrice(null);
         setLiquidationPrice(null);
-        setCurrentPrice(null); // Clear current price to show loading state again
+        setCurrentPrice(null);
     }, [onTokenSelect]);
     //@ts-ignore
     const handleTradeSideChange = useCallback((side) => {
         setTradeSide(side);
-        // Recalculate liquidation price when trade side changes
-        // The useEffect below will handle this as it depends on tradeSide
     }, []);
     ///@ts-ignore
     const handleInputAmountChange = useCallback((event) => {
