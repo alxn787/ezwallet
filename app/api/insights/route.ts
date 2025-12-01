@@ -16,41 +16,100 @@ export async function POST() {
   `;
   // --- End Adjusted Prompt ---
 
-  try {
-    const response = await client.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that provides information about Solana tokens.",
-        },
-        {
-          role: "user",
-          content: prompt, // Use the adjusted prompt
-        },
-      ],
-    });
+  // Default fallback response when OpenAI is unavailable
+  const defaultResponse = ["SOL", "USDC", "USDT", "Fartcoin", "OFFICIAL TRUMP"];
+  
+  // Try GPT-4o first, fallback to gpt-3.5-turbo if quota exceeded
+  const models = ["gpt-4o", "gpt-3.5-turbo"];
+  
+  for (const model of models) {
+    try {
+      console.log(`Attempting to use model: ${model}`);
+      const response = await client.chat.completions.create({
+        model: model,
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful assistant that provides information about Solana tokens.",
+          },
+          {
+            role: "user",
+            content: prompt, // Use the adjusted prompt
+          },
+        ],
+      });
 
-    const content = response.choices[0].message.content?.trim() || "";
+      const content = response.choices[0].message.content?.trim() || "";
 
-    if (!content) {
-         console.error("OpenAI returned empty content.");
-         return new Response("Error: OpenAI returned empty content.", { status: 500 });
+      if (!content) {
+           console.error("OpenAI returned empty content.");
+           // Return default response instead of error
+           console.log("Returning default fallback response");
+           return new Response(JSON.stringify(defaultResponse), {
+             status: 200,
+             headers: { "Content-Type": "text/plain" },
+           });
+      }
+
+      console.log(`Successfully got response from ${model}`);
+      console.log("Returning plain string from API:", content);
+
+      return new Response(content, {
+        status: 200,
+        headers: { "Content-Type": "text/plain" },
+      });
+    } catch (openaiError: any) {
+      console.error(`Error calling OpenAI API with ${model}:`, openaiError);
+      
+      // If it's a quota error and we have another model to try, continue to next model
+      if (openaiError instanceof OpenAI.APIError) {
+        const isQuotaError = openaiError.status === 429 && 
+                            (openaiError.code === 'insufficient_quota' || 
+                             openaiError.message?.includes('quota') ||
+                             openaiError.message?.includes('billing'));
+        
+        // If it's the last model and quota error, return default response
+        if (model === models[models.length - 1] && isQuotaError) {
+          console.warn("OpenAI quota exceeded. Returning default fallback response.");
+          console.warn("Please set up billing at: https://platform.openai.com/account/billing");
+          // Return default response so the feature still works
+          return new Response(JSON.stringify(defaultResponse), {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
+        
+        // If it's the last model or not a quota error, return the error
+        if (model === models[models.length - 1] || !isQuotaError) {
+          // For non-quota errors, still return error
+          if (!isQuotaError) {
+            return new Response(
+              `OpenAI API Error: ${openaiError.status} - ${openaiError.message}`,
+              { status: openaiError.status || 500 }
+            );
+          }
+        }
+        
+        // Quota error but we have another model to try, continue loop
+        console.log(`Quota error with ${model}, trying next model...`);
+        continue;
+      }
+      
+      // Non-APIError, if last model, return default response
+      if (model === models[models.length - 1]) {
+        console.warn("OpenAI API error. Returning default fallback response.");
+        return new Response(JSON.stringify(defaultResponse), {
+          status: 200,
+          headers: { "Content-Type": "text/plain" },
+        });
+      }
     }
-
-    console.log("Returning plain string from API:", content);
-
-    return new Response(content, {
-      status: 200,
-      headers: { "Content-Type": "text/plain" },
-    });
-
-  } catch (openaiError) {
-    console.error("Error calling OpenAI API:", openaiError);
-     // Return a plain string error message
-    if (openaiError instanceof OpenAI.APIError) {
-        return new Response(`OpenAI API Error: ${openaiError.status} - ${openaiError.message}`, { status: openaiError.status || 500 });
-    }
-    return new Response("An error occurred while processing your request.", { status: 500 });
   }
+  
+  // Fallback: return default response
+  console.warn("All OpenAI models failed. Returning default fallback response.");
+  return new Response(JSON.stringify(defaultResponse), {
+    status: 200,
+    headers: { "Content-Type": "text/plain" },
+  });
 }

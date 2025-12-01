@@ -36,12 +36,19 @@ export async function POST(req:NextRequest){
     if(!solwallet){
         return NextResponse.json({
             message:"no wallet found"
-        })
+        }, { status: 400 })
     }
 
-    // get serialized transactions for the swap
-        const { swapTransaction } = await (
-            await fetch('https://quote-api.jup.ag/v6/swap', {
+    if (!data.quoteResponse) {
+        return NextResponse.json({
+            message: "quoteResponse is required"
+        }, { status: 400 })
+    }
+
+    try {
+        // Updated to use the new Jupiter API endpoint (old quote-api.jup.ag/v6/swap is deprecated)
+        // The new endpoint requires the full quoteResponse from the new quote API
+        const swapResponse = await fetch('https://lite-api.jup.ag/swap/v1/swap', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,11 +58,22 @@ export async function POST(req:NextRequest){
                 userPublicKey: solwallet.publicKey,
                 wrapAndUnwrapSol: true,
             })
-            })
-        ).json();
+        });
+
+        if (!swapResponse.ok) {
+            const errorData = await swapResponse.json().catch(() => ({}));
+            return NextResponse.json({
+                message: "Failed to get swap transaction",
+                error: errorData
+            }, { status: swapResponse.status })
+        }
+
+        const { swapTransaction } = await swapResponse.json();
 
         if (!swapTransaction) {
-            throw new Error("swapTransaction is undefined");
+            return NextResponse.json({
+                message: "swapTransaction is undefined"
+            }, { status: 500 })
         }
 
 
@@ -80,6 +98,13 @@ export async function POST(req:NextRequest){
         return NextResponse.json({
             txid
         })
+    } catch (error: any) {
+        console.error("Swap error:", error);
+        return NextResponse.json({
+            message: "Swap failed",
+            error: error.message || "Unknown error"
+        }, { status: 500 })
+    }
 }
 
 function getPrivateKeyFromDb(privateKey: string) {

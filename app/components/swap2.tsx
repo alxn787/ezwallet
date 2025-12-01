@@ -132,23 +132,55 @@ export function Swap2({ tokenBalances, type }: {
             return;
         }
 
+        // Don't fetch quote if same token is selected
+        if (baseAsset.mint === quoteAsset.mint) {
+            setQuoteAmount("");
+            setquoteResponse(null);
+            setQuoteLoading(false);
+            if (type === 'Trigger') {
+                 setTriggerTabSwapRate("0");
+            }
+            return;
+        }
+
         const amountInSmallestUnits = BigInt(Math.floor(Number(watchedBaseAmount) * (10 ** baseAsset.decimals)));
 
         setQuoteLoading(true);
         const controller = new AbortController();
         const signal = controller.signal;
 
-        axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${amountInSmallestUnits.toString()}&slippageBps=50`, { signal })
+        const quoteUrl = `/api/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${amountInSmallestUnits.toString()}&slippageBps=50`;
+        console.log("Fetching quote from:", quoteUrl);
+
+        axios.get(quoteUrl, { 
+            signal,
+            timeout: 15000, // 15 second timeout
+        })
             .then(res => {
-                const newQuoteAmountString = (Number(res.data.outAmount) / (10 ** quoteAsset.decimals)).toString();
-                setQuoteAmount(newQuoteAmountString);
-                setquoteResponse(res.data);
+                if (res.data && res.data.outAmount) {
+                    const newQuoteAmountString = (Number(res.data.outAmount) / (10 ** quoteAsset.decimals)).toString();
+                    setQuoteAmount(newQuoteAmountString);
+                    setquoteResponse(res.data);
+                } else {
+                    console.error("Invalid quote response:", res.data);
+                    setQuoteAmount("Error");
+                    setquoteResponse(null);
+                    if (type === 'Trigger') {
+                        setTriggerTabSwapRate("Error");
+                    }
+                }
             })
             .catch(err => {
                  if (axios.isCancel(err)) {
                      console.log('Amount quote request cancelled', err.message);
                  } else {
                     console.error("Error fetching amount quote:", err);
+                    if (err.response) {
+                        console.error("Response error:", err.response.data);
+                        console.error("Status:", err.response.status);
+                    } else if (err.request) {
+                        console.error("Request error:", err.request);
+                    }
                     setQuoteAmount("Error");
                     setquoteResponse(null);
                     if (type === 'Trigger') {
@@ -182,28 +214,56 @@ export function Swap2({ tokenBalances, type }: {
             const controller = new AbortController();
             const signal = controller.signal;
 
+            // Don't fetch unit price if same token is selected
+            if (baseAsset.mint === quoteAsset.mint) {
+                setMarketUnitPrice("0");
+                if(type === 'Trigger' && triggerTabSwapRate === "0") {
+                    setTriggerTabSwapRate("0");
+                }
+                return;
+            }
+
             try {
-                const res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${unitAmountInSmallestUnits.toString()}&slippageBps=50`, { signal });
-                const unitQuoteAmount = Number(res.data.outAmount) / (10 ** quoteAsset.decimals);
+                const unitQuoteUrl = `/api/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${unitAmountInSmallestUnits.toString()}&slippageBps=50`;
+                const res = await axios.get(unitQuoteUrl, { 
+                    signal,
+                    timeout: 15000,
+                });
+                
+                if (res.data && res.data.outAmount) {
+                    const unitQuoteAmount = Number(res.data.outAmount) / (10 ** quoteAsset.decimals);
 
-                if (unitQuoteAmount > 0) {
-                     setMarketUnitPrice(unitQuoteAmount.toFixed(quoteAsset.decimals).toString());
+                    if (unitQuoteAmount > 0) {
+                         setMarketUnitPrice(unitQuoteAmount.toFixed(quoteAsset.decimals).toString());
 
-                     if(type === 'Trigger' && triggerTabSwapRate === "0") {
-                          setTriggerTabSwapRate(unitQuoteAmount.toFixed(quoteAsset.decimals).toString());
-                     }
+                         if(type === 'Trigger' && triggerTabSwapRate === "0") {
+                              setTriggerTabSwapRate(unitQuoteAmount.toFixed(quoteAsset.decimals).toString());
+                         }
 
+                    } else {
+                         setMarketUnitPrice("0");
+                         if(type === 'Trigger' && triggerTabSwapRate === "0") {
+                             setTriggerTabSwapRate("0");
+                         }
+                    }
                 } else {
-                     setMarketUnitPrice("0");
-                     if(type === 'Trigger' && triggerTabSwapRate === "0") {
-                         setTriggerTabSwapRate("0");
-                     }
+                    console.error("Invalid unit price quote response:", res.data);
+                    setMarketUnitPrice("0");
+                    if(type === 'Trigger' && triggerTabSwapRate === "0") {
+                        setTriggerTabSwapRate("0");
+                    }
                 }
             } catch (err) {
                 if (axios.isCancel(err)) {
                     console.log('Unit price quote request cancelled', err.message);
                 } else {
                    console.error("Error fetching unit price quote:", err);
+                   if (err.response) {
+                       console.error("Response error:", err.response.data);
+                       console.error("Status:", err.response.status);
+                   } else if (err.request) {
+                       console.error("Request error:", err.request);
+                   }
                    setMarketUnitPrice("0");
                     if(type === 'Trigger' && triggerTabSwapRate === "0") {
                         setTriggerTabSwapRate("0");
@@ -315,7 +375,7 @@ export function Swap2({ tokenBalances, type }: {
                 title="Send"
                 selectedToken={baseAsset}
                 onselect={(asset) => setBaseAsset(asset)}
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance || 0).toFixed(3).toString()}
+                subtitle={tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance ? Number(tokenBalances.tokens.find(x => x.name === baseAsset.name)!.balance).toFixed(3) : "0.000"}
             />
 
            <motion.div
@@ -339,7 +399,7 @@ export function Swap2({ tokenBalances, type }: {
                 title="Receive"
                 selectedToken={quoteAsset}
                  onselect={(asset) => setQuoteAsset(asset)}
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance || 0).toFixed(3)}
+                subtitle={tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance ? Number(tokenBalances.tokens.find(x => x.name === quoteAsset.name)!.balance).toFixed(3) : "0.000"}
             />
 
              {type === 'Trigger' && (
@@ -403,7 +463,7 @@ export function Swap2({ tokenBalances, type }: {
                          </button>
                      ) : (
                          watchedBaseAmount && Number(watchedBaseAmount) > 0 ? (
-                             Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance || 0) >= Number(watchedBaseAmount) ? (
+                             (tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance ? Number(tokenBalances.tokens.find(x => x.name === baseAsset.name)!.balance) : 0) >= Number(watchedBaseAmount) ? (
                                  <button
                                      type="submit"
                                      className="text-neutral-900 py-2 px-4 rounded-lg bg-blue-500 hover:bg-blue-500/80 transition-colors w-[98%] text-[20px]"

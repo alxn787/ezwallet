@@ -27,15 +27,52 @@ export function Swap({ tokenBalances, setSelectedTabs }: {
             setquoteResponse(null); 
             return;
         }
+
+        // Don't fetch quote if same token is selected
+        if (baseAsset.mint === quoteAsset.mint) {
+            setQuoteAmount("");
+            setquoteResponse(null);
+            setQuoteLoading(false);
+            return;
+        }
+
         setQuoteLoading(true)
-        axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${Number(baseAmount) * (10 ** baseAsset.decimals)}&slippageBps=50`)
+        // Use BigInt to handle large numbers and avoid precision issues
+        const amountInSmallestUnits = BigInt(Math.floor(Number(baseAmount) * (10 ** baseAsset.decimals)));
+        
+        if (amountInSmallestUnits <= 0n) {
+            setQuoteAmount("");
+            setquoteResponse(null);
+            setQuoteLoading(false);
+            return;
+        }
+
+        const quoteUrl = `/api/quote?inputMint=${baseAsset.mint}&outputMint=${quoteAsset.mint}&amount=${amountInSmallestUnits.toString()}&slippageBps=50`;
+        console.log("Fetching quote from:", quoteUrl);
+        
+        axios.get(quoteUrl, {
+            timeout: 15000, // 15 second timeout
+        })
             .then(res => {
-                setQuoteAmount((Number(res.data.outAmount) / Number(10 ** quoteAsset.decimals)).toString()),
+                if (res.data && res.data.outAmount) {
+                    setQuoteAmount((Number(res.data.outAmount) / Number(10 ** quoteAsset.decimals)).toString());
                     setQuoteLoading(false);
-                setquoteResponse(res.data);
+                    setquoteResponse(res.data);
+                } else {
+                    console.error("Invalid quote response:", res.data);
+                    setQuoteAmount("Error");
+                    setQuoteLoading(false);
+                    setquoteResponse(null);
+                }
             })
             .catch(err => {
                  console.error("Error fetching quote:", err);
+                 if (err.response) {
+                     console.error("Response error:", err.response.data);
+                     console.error("Status:", err.response.status);
+                 } else if (err.request) {
+                     console.error("Request error:", err.request);
+                 }
                  setQuoteAmount("Error");
                  setQuoteLoading(false);
                  setquoteResponse(null);
@@ -50,7 +87,8 @@ export function Swap({ tokenBalances, setSelectedTabs }: {
         const currentQuoteAmount = quoteAmount;
         setBaseAsset(currentQuote);
         setQuoteAsset(currentBase);
-        setBaseAmount(baseAmount);
+        setBaseAmount(currentQuoteAmount);
+        setQuoteAmount(currentBaseAmount);
     };
 
 
@@ -67,7 +105,7 @@ export function Swap({ tokenBalances, setSelectedTabs }: {
                 title="Send"
                 selectedToken={baseAsset}
                 onselect={(asset) => setBaseAsset(asset)}
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance || 0).toFixed(3).toString()}
+                subtitle={tokenBalances?.tokens.find(x => x.name === baseAsset.name)?.balance ? Number(tokenBalances.tokens.find(x => x.name === baseAsset.name)!.balance).toFixed(3) : "0.000"}
             />
             <div className="relative flex items-center justify-center ">
                 <div className="w-full  "></div>
@@ -87,7 +125,7 @@ export function Swap({ tokenBalances, setSelectedTabs }: {
                 title="Receive"
                 selectedToken={quoteAsset}
                 onselect={(asset) => setQuoteAsset(asset)}
-                subtitle={Number(tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance || 0).toFixed(3)}
+                subtitle={tokenBalances?.tokens.find(x => x.name === quoteAsset.name)?.balance ? Number(tokenBalances.tokens.find(x => x.name === quoteAsset.name)!.balance).toFixed(3) : "0.000"}
             />
 
             <div className="flex justify-between mt-5">
