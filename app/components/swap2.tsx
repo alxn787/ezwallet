@@ -253,7 +253,7 @@ export function Swap2({ tokenBalances, type }: {
                         setTriggerTabSwapRate("0");
                     }
                 }
-            } catch (err) {
+            } catch (err: any) {
                 if (axios.isCancel(err)) {
                     console.log('Unit price quote request cancelled', err.message);
                 } else {

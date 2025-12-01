@@ -40,7 +40,7 @@ export function Swap({ tokenBalances, setSelectedTabs }: {
         // Use BigInt to handle large numbers and avoid precision issues
         const amountInSmallestUnits = BigInt(Math.floor(Number(baseAmount) * (10 ** baseAsset.decimals)));
         
-        if (amountInSmallestUnits <= 0n) {
+        if (amountInSmallestUnits <= BigInt(0)) {
             setQuoteAmount("");
             setquoteResponse(null);
             setQuoteLoading(false);
